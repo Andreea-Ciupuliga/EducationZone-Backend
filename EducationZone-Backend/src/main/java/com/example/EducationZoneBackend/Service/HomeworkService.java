@@ -3,12 +3,16 @@ package com.example.EducationZoneBackend.Service;
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
 import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO;
 import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.RegisterHomeworkDTO;
+import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
 import com.example.EducationZoneBackend.Models.Course;
 import com.example.EducationZoneBackend.Models.Homework;
+import com.example.EducationZoneBackend.Models.Student;
 import com.example.EducationZoneBackend.Repository.HomeworkRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
+import com.example.EducationZoneBackend.Repository.StudentRepository;
 import lombok.SneakyThrows;
+import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +23,13 @@ public class HomeworkService {
 
     private HomeworkRepository homeworkRepository;
     private ParticipantsRepository participantsRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
-    public HomeworkService(HomeworkRepository homeworkRepository, ParticipantsRepository participantsRepository) {
+    public HomeworkService(HomeworkRepository homeworkRepository, ParticipantsRepository participantsRepository, StudentRepository studentRepository) {
         this.homeworkRepository = homeworkRepository;
         this.participantsRepository = participantsRepository;
+        this.studentRepository = studentRepository;
     }
 
     public void registerHomework(RegisterHomeworkDTO registerHomeworkDTO)
@@ -40,7 +46,7 @@ public class HomeworkService {
     }
 
     @SneakyThrows
-    public void putHomework(Long homeworkId,RegisterHomeworkDTO registerHomeworkDTO)
+    public void updateHomework(Long homeworkId,RegisterHomeworkDTO registerHomeworkDTO)
     {
         Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(()->new NotFoundException("Homework not found"));
 
@@ -53,6 +59,9 @@ public class HomeworkService {
         if(registerHomeworkDTO.getPoints() !=null)
             homework.setPoints(registerHomeworkDTO.getPoints());
 
+        //TODO: testez daca merge
+        if(registerHomeworkDTO.getCourseId() !=null)
+            homework.setCourse(Course.builder().id(registerHomeworkDTO.getCourseId()).build());
 
         homeworkRepository.save(homework);
     }
@@ -64,25 +73,36 @@ public class HomeworkService {
         homeworkRepository.delete(homework);
     }
 
-    public List<GetHomeworkDTO> getAllHomeworksForAStudent(Long studentId)
+    @SneakyThrows
+    public List<GetHomeworkDTO> getAllHomeworksByStudentId(Long studentId)
     {
-        //TODO: verific si daca id ul de la student exista
+        if(studentRepository.findById(studentId).isEmpty())
+            throw new NotFoundException("Student not found");
 
         //gasim toate cursurile pentru un student si le scriem intr-o lista
-
-        List<GetCourseDTO> courses= participantsRepository.findCoursesByStudentId(studentId);
-
+        List<GetCourseDTO> courses= participantsRepository.findAllCoursesByStudentId(studentId);
         List<GetHomeworkDTO> totalHomeworks = new ArrayList<>();
 
         //parcurgem lista aia si pentru fiecare curs gasim lista de teme
         for(GetCourseDTO course : courses)
         {
-            List<GetHomeworkDTO> homeworks = homeworkRepository.findAllHomeworksFromACourse(course.getId());
+            List<GetHomeworkDTO> homeworks = homeworkRepository.findAllHomeworksByCourseId(course.getId());
 
             for(GetHomeworkDTO homework : homeworks)
                 totalHomeworks.add(homework);
         }
         return totalHomeworks;
 
+    }
+
+    @SneakyThrows
+    public GetHomeworkDTO getHomework(Long homeworkId)
+    {
+        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(()->new NotFoundException("Homework not found"));
+
+        //Dest dest = mapper.map(source, Dest.class);
+        GetHomeworkDTO getHomeworkDTO = new DozerBeanMapper().map(homework, GetHomeworkDTO.class);
+
+        return getHomeworkDTO;
     }
 }

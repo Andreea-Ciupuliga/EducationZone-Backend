@@ -24,7 +24,7 @@ public class ParticipantsService {
     private ParticipantsRepository participantsRepository;
 
     @Autowired
-    public ParticipantsService(StudentRepository studentRepository, CourseRepository courseRepository,ParticipantsRepository participantsRepository) {
+    public ParticipantsService(StudentRepository studentRepository, CourseRepository courseRepository, ParticipantsRepository participantsRepository) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
         this.participantsRepository = participantsRepository;
@@ -32,51 +32,66 @@ public class ParticipantsService {
 
 
     @SneakyThrows
-    public void addStudentAtCourse(Long studentId, Long courseId) {
+    public void registerStudentAtCourse(Long studentId, Long courseId) {
 
-        //am nevoie de un obiect de tip student pentru FirstName si LastName
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("Student not found"));
+        if (studentRepository.findById(studentId).isEmpty())
+            throw new NotFoundException("Student not found");
 
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found"));
 
-        if (participantsRepository.findBystudentIdAndcourseId(studentId, courseId).isPresent()) {
+        if (participantsRepository.findByStudentIdAndCourseId(studentId, courseId).isPresent()) {
             throw new AlreadyExistException("Student already at this course");
         }
 
 
         Participants participants = Participants.builder()
-                .student(Student.builder().id(student.getId()).build())
-                .course(Course.builder().id(course.getId()).build())
+                .student(Student.builder().id(studentId).build())
+                .course(Course.builder().id(courseId).build())
                 .build();
 
         participantsRepository.save(participants);
 
-        course.setNumberOfStudents(course.getNumberOfStudents() +1 );
+        course.setNumberOfStudents(course.getNumberOfStudents() + 1);
         courseRepository.save(course);
 
 
     }
 
     @SneakyThrows
-    public List<GetStudentDTO> findAllStudentsByCourseId(Long courseId) {
+    public List<GetStudentDTO> getAllStudentsByCourseId(Long courseId) {
 
-        //Todo: verific daca courseId exista
+        if(courseRepository.findById(courseId).isEmpty())
+            throw  new NotFoundException("Course not found");
 
-       return participantsRepository.findAllStudentsByCourseId(courseId);
+        return participantsRepository.findAllStudentsByCourseId(courseId);
 
 
     }
 
     @SneakyThrows
-    public List<GetCourseDTO> findCoursesByStudentId(Long studentId) {
+    public List<GetCourseDTO> getAllCoursesByStudentId(Long studentId) {
 
-        //Todo: verific daca studentId exista
+        if(studentRepository.findById(studentId).isEmpty())
+            throw new NotFoundException("Student not found");
 
-    return participantsRepository.findCoursesByStudentId(studentId);
+        return participantsRepository.findAllCoursesByStudentId(studentId);
 
     }
 
 
-    //Todo: remove student from course
+    @SneakyThrows
+    public void removeStudentCourseRelationship(Long studentId, Long courseId) {
+
+        if(studentRepository.findById(studentId).isEmpty())
+            throw new NotFoundException("Student not found");
+
+        if(courseRepository.findById(courseId).isEmpty())
+            throw  new NotFoundException("Course not found");
+
+        Participants participants = participantsRepository.findByStudentIdAndCourseId(studentId, courseId).orElseThrow(()->new NotFoundException("Student not at this course"));
+
+        participantsRepository.delete(participants);
+
+    }
 
 }

@@ -8,6 +8,7 @@ import com.example.EducationZoneBackend.Exceptions.NotFoundException;
 import com.example.EducationZoneBackend.Models.Professor;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import lombok.SneakyThrows;
+import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,7 @@ public class ProfessorService {
     @SneakyThrows
     public void removeProfessor(Long professorId)
     {
-        Professor professor = professorRepository.findById(professorId).orElseThrow(()->new NotFoundException("professor not found"));
+        Professor professor = professorRepository.findById(professorId).orElseThrow(()->new NotFoundException("Professor not found"));
 
         professorRepository.delete(professor);
     }
@@ -62,23 +63,18 @@ public class ProfessorService {
     @SneakyThrows
     public GetProfessorDTO getProfessor(Long professorId)
     {
-        Professor professor = professorRepository.findById(professorId).orElseThrow(()->new NotFoundException("professor not found"));
+        Professor professor = professorRepository.findById(professorId).orElseThrow(()->new NotFoundException("Professor not found"));
 
-        GetProfessorDTO getProfessorDto= GetProfessorDTO.builder()
-                .firstName(professor.getFirstName())
-                .lastName(professor.getLastName())
-                .email(professor.getEmail()).build();
+        //Dest dest = mapper.map(source, Dest.class);
+        GetProfessorDTO getProfessorDto = new DozerBeanMapper().map(professor, GetProfessorDTO.class);
 
         return getProfessorDto;
     }
 
     @SneakyThrows
-    public void putProfessor(Long professorId, RegisterProfessorDTO newRegisterProfessorDto)
+    public void updateProfessor(Long professorId, RegisterProfessorDTO newRegisterProfessorDto)
     {
-        Professor professor = professorRepository.findById(professorId).orElseThrow(()->new NotFoundException("professor not found"));
-
-        //daca este admin sau este chiar professorul
-
+        Professor professor = professorRepository.findById(professorId).orElseThrow(()->new NotFoundException("Professor not found"));
 
         if (newRegisterProfessorDto.getFirstName() != null)
             professor.setFirstName(newRegisterProfessorDto.getFirstName());
@@ -95,6 +91,8 @@ public class ProfessorService {
         if (newRegisterProfessorDto.getUsername() != null)
             professor.setUsername(newRegisterProfessorDto.getUsername());
 
+        if (newRegisterProfessorDto.getPhone() != null)
+            professor.setPhone(newRegisterProfessorDto.getPhone());
 
         professorRepository.save(professor);
 
@@ -104,13 +102,26 @@ public class ProfessorService {
     public List<GetProfessorDTO> getAllProfessors() {
 
         if(professorRepository.findAllProfessors().isEmpty())
-            throw new NotFoundException("there are no professors to display");
+            throw new NotFoundException("There are no professors to display");
 
         return professorRepository.findAllProfessors();
     }
 
+    @SneakyThrows
     public void removeAllProfessors() {
+        if(professorRepository.findAllProfessors().isEmpty())
+            throw new NotFoundException("Professors Not Found");
+
         professorRepository.deleteAll();
+    }
+
+    @SneakyThrows
+    public List<GetProfessorDTO> getAllProfessorsByName(String professorName) {
+
+        if(professorRepository.findAllProfessorsByName(professorName).isEmpty())
+            throw new NotFoundException("Professor Not Found");
+
+        return professorRepository.findAllProfessorsByName(professorName);
     }
 
 }

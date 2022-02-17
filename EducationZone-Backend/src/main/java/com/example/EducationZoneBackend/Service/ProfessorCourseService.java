@@ -31,21 +31,23 @@ public class ProfessorCourseService {
     }
 
     @SneakyThrows
-    public void addProfessorAtCourse(Long professorId, Long courseId) {
+    public void registerProfessorToCourse(Long professorId, Long courseId) {
 
         //am nevoie de un obiect de tip professor pentru FirstName si LastName
-        Professor professor = professorRepository.findById(professorId).orElseThrow(() -> new NotFoundException("Professor not found"));
 
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found"));
+        if(professorRepository.findById(professorId).isEmpty())
+            throw  new NotFoundException("Professor not found");
 
-        if (professorCourseRepository.findByProfessorIdAndcourseId(professorId, courseId).isPresent()) {
+        if(courseRepository.findById(courseId).isEmpty())
+            throw  new NotFoundException("Course not found");
+
+        if (professorCourseRepository.findByProfessorIdAndCourseId(professorId, courseId).isPresent()) {
             throw new AlreadyExistException("Professor already at this course");
         }
 
-
         ProfessorCourse professorCourse = ProfessorCourse.builder()
-                .professor(Professor.builder().id(professor.getId()).build())
-                .course(Course.builder().id(course.getId()).build())
+                .professor(Professor.builder().id(professorId).build())
+                .course(Course.builder().id(courseId).build())
                 .build();
 
         professorCourseRepository.save(professorCourse);
@@ -53,20 +55,36 @@ public class ProfessorCourseService {
     }
 
     @SneakyThrows
-    public List<GetProfessorDTO> findAllProfessorsByCourseId(Long courseId) {
+    public List<GetProfessorDTO> getAllProfessorsByCourseId(Long courseId) {
 
-        //Todo: verific daca courseId exista
+        if(courseRepository.findById(courseId).isEmpty())
+            throw  new NotFoundException("Course not found");
 
         return professorCourseRepository.findAllProfessorsByCourseId(courseId);
     }
 
     @SneakyThrows
-    public List<GetCourseDTO> findCoursesByProfessorId(Long professorId) {
+    public List<GetCourseDTO> getAllCoursesByProfessorId(Long professorId) {
 
-        //Todo: verific daca professorId exista
+        if(professorRepository.findById(professorId).isEmpty())
+        throw  new NotFoundException("Professor not found");
 
-        return professorCourseRepository.findCoursesByProfessorId(professorId);
+        return professorCourseRepository.findAllCoursesByProfessorId(professorId);
     }
 
-    //Todo: remove professor from course
+    @SneakyThrows
+    public void removeCourseProfessorRelationship(Long professorId, Long courseId) {
+
+        if(professorRepository.findById(professorId).isEmpty())
+            throw  new NotFoundException("Professor not found");
+
+        if(courseRepository.findById(courseId).isEmpty())
+            throw  new NotFoundException("Course not found");
+
+        ProfessorCourse professorCourse= professorCourseRepository.findByProfessorIdAndCourseId(professorId, courseId).orElseThrow(()->new NotFoundException("Professor not at this course"));
+
+        professorCourseRepository.delete(professorCourse);
+
+    }
+
 }
