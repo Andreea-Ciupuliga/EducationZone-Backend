@@ -16,5 +16,14 @@ public class GetStudentDTO {
 
     private String email;
 
+    private String username;
+
+    private String groupNumber;
+
+    private String phone;
+
+    private String year;
+
+    private String department;
 
 }

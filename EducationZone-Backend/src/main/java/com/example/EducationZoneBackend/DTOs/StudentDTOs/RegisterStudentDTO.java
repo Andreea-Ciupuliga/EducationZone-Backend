@@ -23,11 +23,12 @@ public class RegisterStudentDTO {
 
     private String username;
 
-    private String studentSet;
-
-    private String studentGroup;
+    private String groupNumber;
 
     private String phone;
 
     private String year;
+
+    private String department;
+
 }

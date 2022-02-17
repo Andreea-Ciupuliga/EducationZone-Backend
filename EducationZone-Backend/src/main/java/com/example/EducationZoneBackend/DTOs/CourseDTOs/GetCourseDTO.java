@@ -19,5 +19,7 @@ public class GetCourseDTO {
 
     private String description;
 
-    private Long year;
+    private String year;
+
+    private String semester;
 }
