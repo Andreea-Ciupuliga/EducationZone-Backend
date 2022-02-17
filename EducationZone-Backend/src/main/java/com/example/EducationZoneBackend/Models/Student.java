@@ -36,19 +36,19 @@ public class Student {
     @Column(name = "username")
     private String username;
 
-    //seria din care face parte studentul
-    @Column(name = "StudentSet")
-    private String studentSet;
-
     //grupa la care este studentul
-    @Column(name = "StudentGroup")
-    private String studentGroup;
+    @Column(name = "groupNumber")
+    private String groupNumber;
 
     @Column(name = "phone")
     private String phone;
 
     @Column(name = "year")
     private String year;
+
+    //departamentul: cti, info, mate
+    @Column(name = "department")
+    private String department;
 
     @JsonIgnore
     @OneToMany(mappedBy = "student",orphanRemoval = true,cascade = {CascadeType.ALL})

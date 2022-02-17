@@ -30,8 +30,11 @@ public class Course {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "semester")
+    private String semester;
+
     @Column(name = "year")
-    private Long year;
+    private String year;
 
     @JsonIgnore
     @OneToMany(mappedBy = "course",orphanRemoval = true,cascade = {CascadeType.ALL})
