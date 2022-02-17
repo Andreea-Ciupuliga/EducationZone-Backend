@@ -23,7 +23,6 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    //*** MERGE ***
     @PostMapping("/register")
     @SneakyThrows
     public ResponseEntity<SuccessDto> registerCourse(@RequestBody RegisterCourseDTO registerCourseDto)
@@ -32,29 +31,32 @@ public class CourseController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @DeleteMapping()
+    @DeleteMapping("/{courseId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto>removeCourse(@RequestParam Long courseId)
+    public ResponseEntity<SuccessDto>removeCourse(@PathVariable Long courseId)
     {
 
         courseService.removeCourse(courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/showCourses")
+    @GetMapping("/getAll")
     public ResponseEntity<List<GetCourseDTO>> getAllCourses() {
 
         return new ResponseEntity<>(courseService.getAllCourses(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @PutMapping()
+    @PutMapping("/{courseId}")
     @SneakyThrows
-    public  ResponseEntity<SuccessDto> putCourse(@RequestParam Long courseId, @RequestBody RegisterCourseDTO registerCourseDto)
+    public  ResponseEntity<SuccessDto> updateCourse(@PathVariable Long courseId, @RequestBody RegisterCourseDTO registerCourseDto)
     {
-        courseService.putCourse(courseId,registerCourseDto);
+        courseService.updateCourse(courseId,registerCourseDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{courseId}")
+    @SneakyThrows
+    public ResponseEntity<GetCourseDTO> getCourse(@PathVariable Long courseId) {
+        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
 }

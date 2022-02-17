@@ -23,7 +23,6 @@ public class ProfessorController {
         this.professorService = professorService;
     }
 
-    //*** MERGE ***
     @PostMapping("/register")
     @SneakyThrows
     public ResponseEntity<SuccessDto> registerProfessor(@RequestBody RegisterProfessorDTO registerProfessorDto) {
@@ -31,40 +30,42 @@ public class ProfessorController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{professorId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> removeProfessor(@RequestParam Long professorId) {
+    public ResponseEntity<SuccessDto> removeProfessor(@PathVariable Long professorId) {
         professorService.removeProfessor(professorId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/all")
+    @DeleteMapping("/deleteAll")
     @SneakyThrows
     public ResponseEntity<SuccessDto> removeAllProfessors() {
         professorService.removeAllProfessors();
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping()
+    @GetMapping("/{professorId}")
     @SneakyThrows
-    public ResponseEntity<GetProfessorDTO> getProfessor(@RequestParam Long professorId) {
+    public ResponseEntity<GetProfessorDTO> getProfessor(@PathVariable Long professorId) {
         return new ResponseEntity<>(professorService.getProfessor(professorId), HttpStatus.OK);
     }
 
     @PutMapping()
     @SneakyThrows
-    public ResponseEntity<SuccessDto> putProfessor(@RequestParam Long professorId, @RequestBody RegisterProfessorDTO registerProfessorDto) {
-        professorService.putProfessor(professorId, registerProfessorDto);
+    public ResponseEntity<SuccessDto> updateProfessor(@RequestParam Long professorId, @RequestBody RegisterProfessorDTO registerProfessorDto) {
+        professorService.updateProfessor(professorId, registerProfessorDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/showProfessors")
-    public ResponseEntity<List<GetProfessorDTO>> getAllAllProfessors() {
+    @GetMapping("/getAll")
+    public ResponseEntity<List<GetProfessorDTO>> getAllProfessors() {
 
         return new ResponseEntity<>(professorService.getAllProfessors(), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllByName")
+    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByName(String professorName) {
 
+        return new ResponseEntity<>(professorService.getAllProfessorsByName(professorName), HttpStatus.OK);
+    }
 }

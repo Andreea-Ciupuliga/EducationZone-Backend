@@ -23,7 +23,6 @@ public class ExamController {
         this.examService = examService;
     }
 
-    //*** MERGE ***
     @PostMapping("/register")
     @SneakyThrows
     public ResponseEntity<SuccessDto> registerExam(@RequestBody RegisterExamDTO registerExamDTO)
@@ -32,35 +31,31 @@ public class ExamController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @DeleteMapping()
+    @DeleteMapping("/{examId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto>removeExam(@RequestParam Long examId)
+    public ResponseEntity<SuccessDto>removeExam(@PathVariable Long examId)
     {
         examService.removeExam(examId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
     @PutMapping()
     @SneakyThrows
-    public  ResponseEntity<SuccessDto> putExam(@RequestParam Long examId, @RequestBody RegisterExamDTO registerExamDTO)
+    public  ResponseEntity<SuccessDto> updateExam(@RequestParam Long examId, @RequestBody RegisterExamDTO registerExamDTO)
     {
-        examService.putExam(examId,registerExamDTO);
+        examService.updateExam(examId,registerExamDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/showExamsForStudent")
-    public ResponseEntity<List<GetExamDTO>> getAllExamsForStudent(@RequestParam Long studentId) {
+    @GetMapping("/getAllByStudentId")
+    public ResponseEntity<List<GetExamDTO>> getAllExamsByStudentId(@RequestParam Long studentId) {
 
-        return new ResponseEntity<>(examService.getAllExamsForStudent(studentId), HttpStatus.OK);
+        return new ResponseEntity<>(examService.getAllExamsByStudentId(studentId), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/showExamForCourse")
-    public ResponseEntity<GetExamDTO> getExamFromCourse(@RequestParam Long courseId) {
+    @GetMapping("/getByCourseId")
+    public ResponseEntity<GetExamDTO> getExamByCourseId(@RequestParam Long courseId) {
 
-        return new ResponseEntity<>(examService.getExamFromCourse(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(examService.getExamByCourseId(courseId), HttpStatus.OK);
     }
 }

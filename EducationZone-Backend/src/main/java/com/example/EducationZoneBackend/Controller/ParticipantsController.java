@@ -23,30 +23,30 @@ public class ParticipantsController {
         this.participantsService = participantsService;
     }
 
-
-    //*** MERGE ***
     @PostMapping("/register")
     @SneakyThrows
-    public ResponseEntity<SuccessDto>registerStudentInCourse(Long studentId,Long courseId)
+    public ResponseEntity<SuccessDto>registerStudentAtCourse(Long studentId,Long courseId)
     {
-        participantsService.addStudentAtCourse(studentId,courseId);
+        participantsService.registerStudentAtCourse(studentId,courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllStudentsByCourseId")
+    public ResponseEntity<List<GetStudentDTO>> getAllStudentsByCourseId(Long courseId) {
 
-    //*** MERGE ***
-    @GetMapping("/findAllStudentsByCourseId")
-    public ResponseEntity<List<GetStudentDTO>> findAllStudentsByCourseId(Long courseId) {
-
-        return new ResponseEntity<>(participantsService.findAllStudentsByCourseId(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(participantsService.getAllStudentsByCourseId(courseId), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/findCoursesByStudentId")
-    public ResponseEntity<List<GetCourseDTO>> findCoursesByStudentId(Long studentId) {
+    @GetMapping("/getAllCoursesByStudentId/{studentId}")
+    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByStudentId(@PathVariable Long studentId) {
 
-        return new ResponseEntity<>(participantsService.findCoursesByStudentId(studentId), HttpStatus.OK);
+        return new ResponseEntity<>(participantsService.getAllCoursesByStudentId(studentId), HttpStatus.OK);
     }
 
-
+    @DeleteMapping()
+    @SneakyThrows
+    public ResponseEntity<SuccessDto> removeStudentCourseRelationship(Long studentId, Long courseId) {
+        participantsService.removeStudentCourseRelationship(studentId,courseId);
+        return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
 }

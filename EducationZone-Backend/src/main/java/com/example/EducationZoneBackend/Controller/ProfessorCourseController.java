@@ -8,10 +8,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,28 +23,30 @@ public class ProfessorCourseController {
         this.professorCourseService = professorCourseService;
     }
 
-    //*** MERGE ***
     @PostMapping("/register")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> registerProfessorInCourse(Long professorId, Long courseId)
+    public ResponseEntity<SuccessDto> registerProfessorToCourse(Long professorId, Long courseId)
     {
-        professorCourseService.addProfessorAtCourse(professorId,courseId);
+        professorCourseService.registerProfessorToCourse(professorId,courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/findAllProfessorsByCourseId")
-    public ResponseEntity<List<GetProfessorDTO>> findAllProfessorsByCourseId(Long courseId) {
+    @GetMapping("/getAllProfessorsByCourseId")
+    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByCourseId(Long courseId) {
 
-        return new ResponseEntity<>(professorCourseService.findAllProfessorsByCourseId(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(professorCourseService.getAllProfessorsByCourseId(courseId), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/findCoursesByProfessorId")
-    public ResponseEntity<List<GetCourseDTO>> findCoursesByProfessorId(Long professorId) {
+    @GetMapping("/getAllCoursesByProfessorId")
+    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByProfessorId(Long professorId) {
 
-        return new ResponseEntity<>(professorCourseService.findCoursesByProfessorId(professorId), HttpStatus.OK);
+        return new ResponseEntity<>(professorCourseService.getAllCoursesByProfessorId(professorId), HttpStatus.OK);
     }
 
-
+    @DeleteMapping()
+    @SneakyThrows
+    public ResponseEntity<SuccessDto> removeCourseProfessorRelationship(Long professorId, Long courseId) {
+        professorCourseService.removeCourseProfessorRelationship(professorId,courseId);
+        return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
 }

@@ -5,6 +5,7 @@ import com.example.EducationZoneBackend.DTOs.StudentDTOs.RegisterStudentDTO;
 import com.example.EducationZoneBackend.Service.StudentService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import lombok.SneakyThrows;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,60 +34,48 @@ public class StudentController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-
-    //*** MERGE ***
     //@PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
-    @DeleteMapping()
+    @DeleteMapping("/{studentId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> removeStudent(@RequestParam Long studentId) {
+    public ResponseEntity<SuccessDto> removeStudent(@PathVariable Long studentId) {
         studentService.removeStudent(studentId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-
-    //*** MERGE ***
     //@PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/all")
+    @DeleteMapping("/deleteAll")
     @SneakyThrows
     public ResponseEntity<SuccessDto> removeAllStudents() {
         studentService.removeAllStudents();
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
     //@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping()
+    @GetMapping("/{studentId}")
     @SneakyThrows
-    public ResponseEntity<GetStudentDTO> getStudent(@RequestParam Long studentId) {
+    public ResponseEntity<GetStudentDTO> getStudent(@PathVariable Long studentId) {
         return new ResponseEntity<>(studentService.getStudent(studentId), HttpStatus.OK);
     }
 
-
-    //*** MERGE ***
     //@PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
     @PutMapping()
     @SneakyThrows
-    public ResponseEntity<SuccessDto> putStudent(@RequestParam Long studentId, @RequestBody RegisterStudentDTO registerStudentDto) {
-        studentService.putStudent(studentId, registerStudentDto);
+    public ResponseEntity<SuccessDto> updateStudent(@RequestParam Long studentId, @RequestBody RegisterStudentDTO registerStudentDto) {
+        studentService.updateStudent(studentId, registerStudentDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
     //@PreAuthorize("hasAnyRole('CLIENT_ADMIN','PROFESSOR','CLIENT_STUDENT')")
-    @GetMapping("/showStudents")
-    public ResponseEntity<List<GetStudentDTO>> getAllAllStudents() {
+    @GetMapping("/getAll")
+    public ResponseEntity<List<GetStudentDTO>> getAllStudents() {
 
         return new ResponseEntity<>(studentService.getAllStudents(), HttpStatus.OK);
     }
 
-
-    //*** MERGE ***
     //@PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','STUDENT')")
-    @GetMapping("/showStudentsByName")
+    @GetMapping("/getAllByName")
     public ResponseEntity<List<GetStudentDTO>> getAllStudentsByName(@RequestParam String studentName) {
 
         return new ResponseEntity<>(studentService.getAllStudentsByName(studentName), HttpStatus.OK);
     }
-
-
 }

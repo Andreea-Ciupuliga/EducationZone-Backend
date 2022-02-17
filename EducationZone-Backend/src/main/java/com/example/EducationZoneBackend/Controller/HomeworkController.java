@@ -22,7 +22,6 @@ public class HomeworkController {
         this.homeworkService = homeworkService;
     }
 
-    //*** MERGE ***
     @PostMapping("/register")
     @SneakyThrows
     public ResponseEntity<SuccessDto> registerHomework(@RequestBody RegisterHomeworkDTO registerHomeworkDTO)
@@ -31,29 +30,31 @@ public class HomeworkController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @DeleteMapping()
+    @DeleteMapping("/{homeworkId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto>removeHomework(@RequestParam Long homeworkId)
+    public ResponseEntity<SuccessDto>removeHomework(@PathVariable Long homeworkId)
     {
         homeworkService.removeHomework(homeworkId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //*** MERGE ***
-    @GetMapping("/showHomeworksForAStudent")
-    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksForAStudent(@RequestParam Long studentId) {
+    @GetMapping("/getAllByStudentId")
+    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksByStudentId(@RequestParam Long studentId) {
 
-        return new ResponseEntity<>(homeworkService.getAllHomeworksForAStudent(studentId), HttpStatus.OK);
+        return new ResponseEntity<>(homeworkService.getAllHomeworksByStudentId(studentId), HttpStatus.OK);
     }
 
-
-    //*** MERGE ***
     @PutMapping()
     @SneakyThrows
-    public  ResponseEntity<SuccessDto> putHomework(@RequestParam Long homeworkId, @RequestBody RegisterHomeworkDTO registerHomeworkDTO)
+    public  ResponseEntity<SuccessDto> updateHomework(@RequestParam Long homeworkId, @RequestBody RegisterHomeworkDTO registerHomeworkDTO)
     {
-        homeworkService.putHomework(homeworkId,registerHomeworkDTO);
+        homeworkService.updateHomework(homeworkId,registerHomeworkDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{homeworkId}")
+    @SneakyThrows
+    public ResponseEntity<GetHomeworkDTO> getHomework(@PathVariable Long homeworkId) {
+        return new ResponseEntity<>(homeworkService.getHomework(homeworkId), HttpStatus.OK);
     }
 }
