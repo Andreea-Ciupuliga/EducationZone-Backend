@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface HomeworkRepository extends JpaRepository<Homework, Long> {
 
-    //gasim toate temele de la un curs
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO(h.description,h.deadline,h.points,h.course.id,h.course.name) FROM Homework h JOIN Course c ON h.course.id=c.id where h.course.id=:courseId")
-    List<GetHomeworkDTO> findAllHomeworksFromACourse(@Param("courseId") Long courseId);
+    List<GetHomeworkDTO> findAllHomeworksByCourseId(@Param("courseId") Long courseId);
 }

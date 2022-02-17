@@ -5,6 +5,7 @@ import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Models.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public interface ProfessorRepository extends JpaRepository<Professor,Long> {
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO(p.firstName,p.lastName,p.email,p.username,p.phone) FROM Professor p")
     List<GetProfessorDTO> findAllProfessors();
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO(p.firstName,p.lastName,p.email,p.username,p.phone) FROM Professor p WHERE p.lastName LIKE %:name% OR p.firstName LIKE %:name%")
+    List<GetProfessorDTO> findAllProfessorsByName(@Param("name")String name);
 }

@@ -14,12 +14,12 @@ import java.util.Optional;
 @Repository
 public interface ParticipantsRepository extends JpaRepository<Participants, Long> {
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO(s.firstName,s.lastName,s.email) FROM Participants p JOIN Student s ON p.student.id = s.id where p.course.id=:courseId")
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO(s.firstName,s.lastName,s.email,s.username,s.groupNumber,s.phone,s.year,s.department) FROM Participants p JOIN Student s ON p.student.id = s.id where p.course.id=:courseId")
     List<GetStudentDTO> findAllStudentsByCourseId(@Param("courseId") Long courseId);
 
     @Query("SELECT p from Participants p where p.student.id =:studentId AND p.course.id =:courseId")
-    Optional<Participants> findBystudentIdAndcourseId(@Param("studentId") Long studentId,@Param("courseId") Long courseId);
+    Optional<Participants> findByStudentIdAndCourseId(@Param("studentId") Long studentId,@Param("courseId") Long courseId);
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year) FROM Participants p JOIN Course c ON p.course.id = c.id where p.student.id=:studentId")
-    List<GetCourseDTO> findCoursesByStudentId(@Param("studentId") Long studentId);
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Participants p JOIN Course c ON p.course.id = c.id where p.student.id=:studentId")
+    List<GetCourseDTO> findAllCoursesByStudentId(@Param("studentId") Long studentId);
 }

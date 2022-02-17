@@ -13,6 +13,6 @@ public interface CourseRepository extends JpaRepository<Course,Long>{
 
     Optional<Course> findByName(String name);
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year) FROM Course c")
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c")
     List<GetCourseDTO> findAllCourses();
 }
