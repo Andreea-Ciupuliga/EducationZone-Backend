@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -22,4 +24,6 @@ public class GetCourseDTO {
     private String year;
 
     private String semester;
+
+    private String professorName;
 }
