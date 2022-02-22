@@ -32,8 +32,7 @@ public class HomeworkService {
         this.studentRepository = studentRepository;
     }
 
-    public void registerHomework(RegisterHomeworkDTO registerHomeworkDTO)
-    {
+    public void registerHomework(RegisterHomeworkDTO registerHomeworkDTO) {
         Homework homework = Homework.builder()
                 .description(registerHomeworkDTO.getDescription())
                 .deadline(registerHomeworkDTO.getDeadline())
@@ -46,59 +45,48 @@ public class HomeworkService {
     }
 
     @SneakyThrows
-    public void updateHomework(Long homeworkId,RegisterHomeworkDTO registerHomeworkDTO)
-    {
-        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(()->new NotFoundException("Homework not found"));
+    public void updateHomework(Long homeworkId, RegisterHomeworkDTO registerHomeworkDTO) {
+        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(() -> new NotFoundException("Homework not found"));
 
-        if(registerHomeworkDTO.getDescription() !=null)
+        if (registerHomeworkDTO.getDescription() != null)
             homework.setDescription(registerHomeworkDTO.getDescription());
 
-        if(registerHomeworkDTO.getDeadline() !=null)
+        if (registerHomeworkDTO.getDeadline() != null)
             homework.setDeadline(registerHomeworkDTO.getDeadline());
 
-        if(registerHomeworkDTO.getPoints() !=null)
+        if (registerHomeworkDTO.getPoints() != null)
             homework.setPoints(registerHomeworkDTO.getPoints());
 
         //TODO: testez daca merge
-        if(registerHomeworkDTO.getCourseId() !=null)
+        if (registerHomeworkDTO.getCourseId() != null)
             homework.setCourse(Course.builder().id(registerHomeworkDTO.getCourseId()).build());
 
         homeworkRepository.save(homework);
     }
 
     @SneakyThrows
-    public void removeHomework(Long homeworkId)
-    {
-        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(()->new NotFoundException("Homework not found"));
+    public void removeHomework(Long homeworkId) {
+        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(() -> new NotFoundException("Homework not found"));
         homeworkRepository.delete(homework);
     }
 
     @SneakyThrows
-    public List<GetHomeworkDTO> getAllHomeworksByStudentId(Long studentId)
-    {
-        if(studentRepository.findById(studentId).isEmpty())
+    public List<GetHomeworkDTO> getAllHomeworksByStudentId(Long studentId) {
+        if (studentRepository.findById(studentId).isEmpty())
             throw new NotFoundException("Student not found");
 
-        //gasim toate cursurile pentru un student si le scriem intr-o lista
-        List<GetCourseDTO> courses= participantsRepository.findAllCoursesByStudentId(studentId);
-        List<GetHomeworkDTO> totalHomeworks = new ArrayList<>();
+       return homeworkRepository.findAllHomeworksByStudentId(studentId);
+    }
 
-        //parcurgem lista aia si pentru fiecare curs gasim lista de teme
-        for(GetCourseDTO course : courses)
-        {
-            List<GetHomeworkDTO> homeworks = homeworkRepository.findAllHomeworksByCourseId(course.getId());
-
-            for(GetHomeworkDTO homework : homeworks)
-                totalHomeworks.add(homework);
-        }
-        return totalHomeworks;
+    @SneakyThrows
+    public List<GetHomeworkDTO> getAllHomeworksByCourseId(Long courseId) {
+        return homeworkRepository.findAllHomeworksByCourseId(courseId);
 
     }
 
     @SneakyThrows
-    public GetHomeworkDTO getHomework(Long homeworkId)
-    {
-        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(()->new NotFoundException("Homework not found"));
+    public GetHomeworkDTO getHomework(Long homeworkId) {
+        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(() -> new NotFoundException("Homework not found"));
 
         //Dest dest = mapper.map(source, Dest.class);
         GetHomeworkDTO getHomeworkDTO = new DozerBeanMapper().map(homework, GetHomeworkDTO.class);
