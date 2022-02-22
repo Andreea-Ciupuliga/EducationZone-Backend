@@ -47,14 +47,14 @@ public class ExamController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllByStudentId")
-    public ResponseEntity<List<GetExamDTO>> getAllExamsByStudentId(@RequestParam Long studentId) {
+    @GetMapping("/getAllByStudentId/{studentId}")
+    public ResponseEntity<List<GetExamDTO>> getAllExamsByStudentId(@PathVariable Long studentId) {
 
         return new ResponseEntity<>(examService.getAllExamsByStudentId(studentId), HttpStatus.OK);
     }
 
-    @GetMapping("/getByCourseId")
-    public ResponseEntity<GetExamDTO> getExamByCourseId(@RequestParam Long courseId) {
+    @GetMapping("/getByCourseId/{courseId}")
+    public ResponseEntity<GetExamDTO> getExamByCourseId(@PathVariable Long courseId) {
 
         return new ResponseEntity<>(examService.getExamByCourseId(courseId), HttpStatus.OK);
     }

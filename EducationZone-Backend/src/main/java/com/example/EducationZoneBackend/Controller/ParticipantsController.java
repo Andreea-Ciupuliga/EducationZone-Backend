@@ -31,8 +31,8 @@ public class ParticipantsController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllStudentsByCourseId")
-    public ResponseEntity<List<GetStudentDTO>> getAllStudentsByCourseId(Long courseId) {
+    @GetMapping("/getAllStudentsByCourseId/{courseId}")
+    public ResponseEntity<List<GetStudentDTO>> getAllStudentsByCourseId(@PathVariable Long courseId) {
 
         return new ResponseEntity<>(participantsService.getAllStudentsByCourseId(courseId), HttpStatus.OK);
     }

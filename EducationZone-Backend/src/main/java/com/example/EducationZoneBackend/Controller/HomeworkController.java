@@ -1,4 +1,5 @@
 package com.example.EducationZoneBackend.Controller;
+
 import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO;
 import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.RegisterHomeworkDTO;
 import com.example.EducationZoneBackend.Service.HomeworkService;
@@ -24,31 +25,34 @@ public class HomeworkController {
 
     @PostMapping("/register")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> registerHomework(@RequestBody RegisterHomeworkDTO registerHomeworkDTO)
-    {
+    public ResponseEntity<SuccessDto> registerHomework(@RequestBody RegisterHomeworkDTO registerHomeworkDTO) {
         homeworkService.registerHomework(registerHomeworkDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{homeworkId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto>removeHomework(@PathVariable Long homeworkId)
-    {
+    public ResponseEntity<SuccessDto> removeHomework(@PathVariable Long homeworkId) {
         homeworkService.removeHomework(homeworkId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllByStudentId")
-    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksByStudentId(@RequestParam Long studentId) {
+    @GetMapping("/getAllByStudentId/{studentId}")
+    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksByStudentId(@PathVariable Long studentId) {
 
         return new ResponseEntity<>(homeworkService.getAllHomeworksByStudentId(studentId), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllByCourseId/{courseId}")
+    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksByCourseId(@PathVariable Long courseId) {
+
+        return new ResponseEntity<>(homeworkService.getAllHomeworksByCourseId(courseId), HttpStatus.OK);
+    }
+
     @PutMapping()
     @SneakyThrows
-    public  ResponseEntity<SuccessDto> updateHomework(@RequestParam Long homeworkId, @RequestBody RegisterHomeworkDTO registerHomeworkDTO)
-    {
-        homeworkService.updateHomework(homeworkId,registerHomeworkDTO);
+    public ResponseEntity<SuccessDto> updateHomework(@RequestParam Long homeworkId, @RequestBody RegisterHomeworkDTO registerHomeworkDTO) {
+        homeworkService.updateHomework(homeworkId, registerHomeworkDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
