@@ -1,6 +1,5 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
 import com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO;
 import com.example.EducationZoneBackend.DTOs.ExamDTOs.RegisterExamDTO;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
@@ -14,7 +13,6 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,9 +57,8 @@ public class ExamService {
             exam.setPoints(registerExamDTO.getPoints());
 
         //TODO: testez daca merge
-        if(registerExamDTO.getCourseId() !=null)
+        if (registerExamDTO.getCourseId() != null)
             exam.setCourse(Course.builder().id(registerExamDTO.getCourseId()).build());
-
 
 
         examRepository.save(exam);
@@ -74,37 +71,20 @@ public class ExamService {
     }
 
     @SneakyThrows
-    public GetExamDTO getExamByCourseId(Long courseId)
-    {
-        if(courseRepository.findById(courseId).isEmpty())
+    public GetExamDTO getExamByCourseId(Long courseId) {
+        if (courseRepository.findById(courseId).isEmpty())
             throw new NotFoundException("Course not found");
 
         return examRepository.findExamByCourseId(courseId).orElseThrow(() -> new NotFoundException("Exam not found"));
     }
 
     @SneakyThrows
-    public List<GetExamDTO> getAllExamsByStudentId(Long studentId)
-    {
-        if(studentRepository.findById(studentId).isEmpty())
+    public List<GetExamDTO> getAllExamsByStudentId(Long studentId) {
+        if (studentRepository.findById(studentId).isEmpty())
             throw new NotFoundException("Student not found");
 
-        //gasim toate cursurile pentru un student si le scriem intr-o lista
-
-        List<GetCourseDTO> courses= participantsRepository.findAllCoursesByStudentId(studentId);
-        List<GetExamDTO> totalExams = new ArrayList<>();
-
-
-        //parcurgem lista aia si pentru fiecare curs gasim lista de examene
-        for(GetCourseDTO course : courses)
-        {
-            GetExamDTO exam = examRepository.findExamByCourseId(course.getId()).orElseThrow(() -> new NotFoundException("Exam not found"));
-
-            totalExams.add(exam);
-        }
-        return totalExams;
-
+        return examRepository.findExamByStudentId(studentId);
     }
-
 
 
 }
