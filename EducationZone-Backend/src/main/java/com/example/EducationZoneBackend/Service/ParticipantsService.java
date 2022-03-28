@@ -1,6 +1,7 @@
 package com.example.EducationZoneBackend.Service;
 
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTOs.GradeDTOs.GetGradeDTO;
 import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
@@ -75,6 +76,16 @@ public class ParticipantsService {
             throw new NotFoundException("Student not found");
 
         return participantsRepository.findAllCoursesByStudentId(studentId);
+
+    }
+
+    @SneakyThrows
+    public List<GetGradeDTO> getAllGradesByStudentId(Long studentId) {
+
+        if(studentRepository.findById(studentId).isEmpty())
+            throw new NotFoundException("Student not found");
+
+        return participantsRepository.findAllGradesByStudentId(studentId);
 
     }
 
