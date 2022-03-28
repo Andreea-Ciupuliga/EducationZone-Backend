@@ -59,4 +59,10 @@ public class CourseController {
     public ResponseEntity<GetCourseDTO> getCourse(@PathVariable Long courseId) {
         return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
+
+    @GetMapping("/getAllByName/{courseName}")
+    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByName(@PathVariable String courseName) {
+
+        return new ResponseEntity<>(courseService.getAllCoursesByName(courseName), HttpStatus.OK);
+    }
 }
