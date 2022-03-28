@@ -94,4 +94,14 @@ public class CourseService {
 
         return getCourseDto;
     }
+
+    @SneakyThrows
+    public List<GetCourseDTO> getAllCoursesByName(String courseName) {
+
+        if (courseRepository.findAllCoursesByName(courseName).isEmpty())
+            throw new NotFoundException("Coursess Not Found");
+
+
+        return courseRepository.findAllCoursesByName(courseName);
+    }
 }
