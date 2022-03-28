@@ -93,4 +93,13 @@ public class HomeworkService {
 
         return getHomeworkDTO;
     }
+
+    @SneakyThrows
+    public List<GetHomeworkDTO> getAllHomeworks() {
+
+        if(homeworkRepository.findAllHomeworks().isEmpty())
+            throw new NotFoundException("There are no homeworks to display");
+
+        return homeworkRepository.findAllHomeworks();
+    }
 }

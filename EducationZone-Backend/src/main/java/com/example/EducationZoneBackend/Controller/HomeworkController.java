@@ -61,4 +61,10 @@ public class HomeworkController {
     public ResponseEntity<GetHomeworkDTO> getHomework(@PathVariable Long homeworkId) {
         return new ResponseEntity<>(homeworkService.getHomework(homeworkId), HttpStatus.OK);
     }
+
+    @GetMapping("/getAll")
+    @SneakyThrows
+    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworks() {
+        return new ResponseEntity<>(homeworkService.getAllHomeworks(), HttpStatus.OK);
+    }
 }
