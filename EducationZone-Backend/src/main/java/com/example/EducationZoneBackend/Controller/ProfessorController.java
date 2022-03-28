@@ -63,8 +63,8 @@ public class ProfessorController {
         return new ResponseEntity<>(professorService.getAllProfessors(), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllByName")
-    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByName(String professorName) {
+    @GetMapping("/getAllByName/{professorName}")
+    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByName(@PathVariable String professorName) {
 
         return new ResponseEntity<>(professorService.getAllProfessorsByName(professorName), HttpStatus.OK);
     }

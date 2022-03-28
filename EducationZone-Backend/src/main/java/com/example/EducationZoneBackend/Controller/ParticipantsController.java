@@ -1,6 +1,7 @@
 package com.example.EducationZoneBackend.Controller;
 
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTOs.GradeDTOs.GetGradeDTO;
 import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Service.ParticipantsService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
@@ -23,9 +24,9 @@ public class ParticipantsController {
         this.participantsService = participantsService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register/{studentId}/{courseId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto>registerStudentAtCourse(Long studentId,Long courseId)
+    public ResponseEntity<SuccessDto>registerStudentAtCourse(@PathVariable Long studentId,@PathVariable Long courseId)
     {
         participantsService.registerStudentAtCourse(studentId,courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
@@ -43,9 +44,15 @@ public class ParticipantsController {
         return new ResponseEntity<>(participantsService.getAllCoursesByStudentId(studentId), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @GetMapping("/getAllGradesByStudentId/{studentId}")
+    public ResponseEntity<List<GetGradeDTO>> getAllGradesByStudentId(@PathVariable Long studentId) {
+
+        return new ResponseEntity<>(participantsService.getAllGradesByStudentId(studentId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{studentId}/{courseId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> removeStudentCourseRelationship(Long studentId, Long courseId) {
+    public ResponseEntity<SuccessDto> removeStudentCourseRelationship(@PathVariable Long studentId,@PathVariable Long courseId) {
         participantsService.removeStudentCourseRelationship(studentId,courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }

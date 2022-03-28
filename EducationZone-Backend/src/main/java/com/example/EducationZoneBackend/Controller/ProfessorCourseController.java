@@ -23,29 +23,29 @@ public class ProfessorCourseController {
         this.professorCourseService = professorCourseService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register/{professorId}/{courseId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> registerProfessorToCourse(Long professorId, Long courseId)
+    public ResponseEntity<SuccessDto> registerProfessorToCourse(@PathVariable Long professorId,@PathVariable Long courseId)
     {
         professorCourseService.registerProfessorToCourse(professorId,courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllProfessorsByCourseId")
-    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByCourseId(Long courseId) {
+    @GetMapping("/getAllProfessorsByCourseId/{courseId}")
+    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByCourseId(@PathVariable Long courseId) {
 
         return new ResponseEntity<>(professorCourseService.getAllProfessorsByCourseId(courseId), HttpStatus.OK);
     }
 
-    @GetMapping("/getAllCoursesByProfessorId")
-    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByProfessorId(Long professorId) {
+    @GetMapping("/getAllCoursesByProfessorId/{professorId}")
+    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByProfessorId(@PathVariable Long professorId) {
 
         return new ResponseEntity<>(professorCourseService.getAllCoursesByProfessorId(professorId), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{professorId}/{courseId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> removeCourseProfessorRelationship(Long professorId, Long courseId) {
+    public ResponseEntity<SuccessDto> removeCourseProfessorRelationship(@PathVariable Long professorId,@PathVariable Long courseId) {
         professorCourseService.removeCourseProfessorRelationship(professorId,courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }

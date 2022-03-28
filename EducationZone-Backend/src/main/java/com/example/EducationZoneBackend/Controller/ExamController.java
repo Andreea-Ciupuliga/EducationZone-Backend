@@ -39,9 +39,9 @@ public class ExamController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    @PutMapping()
+    @PutMapping("/{examId}")
     @SneakyThrows
-    public  ResponseEntity<SuccessDto> updateExam(@RequestParam Long examId, @RequestBody RegisterExamDTO registerExamDTO)
+    public  ResponseEntity<SuccessDto> updateExam(@PathVariable Long examId, @RequestBody RegisterExamDTO registerExamDTO)
     {
         examService.updateExam(examId,registerExamDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);

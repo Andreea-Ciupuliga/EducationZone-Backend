@@ -73,8 +73,8 @@ public class StudentController {
     }
 
     //@PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','STUDENT')")
-    @GetMapping("/getAllByName")
-    public ResponseEntity<List<GetStudentDTO>> getAllStudentsByName(@RequestParam String studentName) {
+    @GetMapping("/getAllByName/{studentName}")
+    public ResponseEntity<List<GetStudentDTO>> getAllStudentsByName(@PathVariable String studentName) {
 
         return new ResponseEntity<>(studentService.getAllStudentsByName(studentName), HttpStatus.OK);
     }
