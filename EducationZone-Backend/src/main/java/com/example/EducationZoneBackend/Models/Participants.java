@@ -18,8 +18,8 @@ public class Participants {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "examGrade")
-    private String examGrade;
+    @Column(name = "courseGrade")
+    private String courseGrade;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Student student;
