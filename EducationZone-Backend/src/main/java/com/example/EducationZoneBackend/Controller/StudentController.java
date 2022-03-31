@@ -58,9 +58,9 @@ public class StudentController {
     }
 
     //@PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
-    @PutMapping()
+    @PutMapping("/{studentId}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> updateStudent(@RequestParam Long studentId, @RequestBody RegisterStudentDTO registerStudentDto) {
+    public ResponseEntity<SuccessDto> updateStudent(@PathVariable Long studentId, @RequestBody RegisterStudentDTO registerStudentDto) {
         studentService.updateStudent(studentId, registerStudentDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
