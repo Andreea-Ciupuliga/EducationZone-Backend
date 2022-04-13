@@ -30,7 +30,7 @@ public class Student {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
+    @Transient
     private String password;
 
     @Column(name = "username")
