@@ -4,7 +4,6 @@ import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO;
 import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.RegisterHomeworkDTO;
 import com.example.EducationZoneBackend.Service.HomeworkService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +23,12 @@ public class HomeworkController {
     }
 
     @PostMapping("/register")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> registerHomework(@RequestBody RegisterHomeworkDTO registerHomeworkDTO) {
         homeworkService.registerHomework(registerHomeworkDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{homeworkId}")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> removeHomework(@PathVariable Long homeworkId) {
         homeworkService.removeHomework(homeworkId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
@@ -43,27 +40,30 @@ public class HomeworkController {
         return new ResponseEntity<>(homeworkService.getAllHomeworksByStudentId(studentId), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllByStudentUsername/{username}")
+    public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksByStudentUsername(@PathVariable String username) {
+
+        return new ResponseEntity<>(homeworkService.getAllHomeworksByStudentUsername(username), HttpStatus.OK);
+    }
+
     @GetMapping("/getAllByCourseId/{courseId}")
     public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworksByCourseId(@PathVariable Long courseId) {
 
         return new ResponseEntity<>(homeworkService.getAllHomeworksByCourseId(courseId), HttpStatus.OK);
     }
 
-    @PutMapping()
-    @SneakyThrows
-    public ResponseEntity<SuccessDto> updateHomework(@RequestParam Long homeworkId, @RequestBody RegisterHomeworkDTO registerHomeworkDTO) {
+    @PutMapping("/{homeworkId}")
+    public ResponseEntity<SuccessDto> updateHomework(@PathVariable Long homeworkId, @RequestBody RegisterHomeworkDTO registerHomeworkDTO) {
         homeworkService.updateHomework(homeworkId, registerHomeworkDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @GetMapping("/{homeworkId}")
-    @SneakyThrows
     public ResponseEntity<GetHomeworkDTO> getHomework(@PathVariable Long homeworkId) {
         return new ResponseEntity<>(homeworkService.getHomework(homeworkId), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
-    @SneakyThrows
     public ResponseEntity<List<GetHomeworkDTO>> getAllHomeworks() {
         return new ResponseEntity<>(homeworkService.getAllHomeworks(), HttpStatus.OK);
     }

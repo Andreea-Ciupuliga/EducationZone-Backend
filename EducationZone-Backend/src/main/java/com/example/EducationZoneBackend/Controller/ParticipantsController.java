@@ -1,11 +1,10 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
 import com.example.EducationZoneBackend.DTOs.GradeDTOs.GetGradeDTO;
 import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Service.ParticipantsService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +24,8 @@ public class ParticipantsController {
     }
 
     @PostMapping("/register/{studentId}/{courseId}")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto>registerStudentAtCourse(@PathVariable Long studentId,@PathVariable Long courseId)
-    {
-        participantsService.registerStudentAtCourse(studentId,courseId);
+    public ResponseEntity<SuccessDto> registerStudentAtCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+        participantsService.registerStudentAtCourse(studentId, courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
@@ -39,9 +36,15 @@ public class ParticipantsController {
     }
 
     @GetMapping("/getAllCoursesByStudentId/{studentId}")
-    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByStudentId(@PathVariable Long studentId) {
+    public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCoursesByStudentId(@PathVariable Long studentId) {
 
         return new ResponseEntity<>(participantsService.getAllCoursesByStudentId(studentId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllCoursesByStudentUsername/{studentUsername}")
+    public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCoursesByStudentUsername(@PathVariable String studentUsername) {
+
+        return new ResponseEntity<>(participantsService.getAllCoursesByStudentUsername(studentUsername), HttpStatus.OK);
     }
 
     @GetMapping("/getAllGradesByStudentId/{studentId}")
@@ -50,10 +53,15 @@ public class ParticipantsController {
         return new ResponseEntity<>(participantsService.getAllGradesByStudentId(studentId), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllGradesByStudentUsername/{studentUsername}")
+    public ResponseEntity<List<GetGradeDTO>> getAllGradesByStudentUsername(@PathVariable String studentUsername) {
+
+        return new ResponseEntity<>(participantsService.getAllGradesByStudentUsername(studentUsername), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{studentId}/{courseId}")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto> removeStudentCourseRelationship(@PathVariable Long studentId,@PathVariable Long courseId) {
-        participantsService.removeStudentCourseRelationship(studentId,courseId);
+    public ResponseEntity<SuccessDto> removeStudentCourseRelationship(@PathVariable Long studentId, @PathVariable Long courseId) {
+        participantsService.removeStudentCourseRelationship(studentId, courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 }

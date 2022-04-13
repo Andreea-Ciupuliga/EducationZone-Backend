@@ -4,7 +4,6 @@ import com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO;
 import com.example.EducationZoneBackend.DTOs.ExamDTOs.RegisterExamDTO;
 import com.example.EducationZoneBackend.Service.ExamService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,26 +23,26 @@ public class ExamController {
     }
 
     @PostMapping("/register")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto> registerExam(@RequestBody RegisterExamDTO registerExamDTO)
-    {
+    public ResponseEntity<SuccessDto> registerExam(@RequestBody RegisterExamDTO registerExamDTO) {
         examService.registerExam(registerExamDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{examId}")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto>removeExam(@PathVariable Long examId)
-    {
+    public ResponseEntity<SuccessDto> removeExam(@PathVariable Long examId) {
         examService.removeExam(examId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @PutMapping("/{examId}")
-    @SneakyThrows
-    public  ResponseEntity<SuccessDto> updateExam(@PathVariable Long examId, @RequestBody RegisterExamDTO registerExamDTO)
-    {
-        examService.updateExam(examId,registerExamDTO);
+    public ResponseEntity<SuccessDto> updateExam(@PathVariable Long examId, @RequestBody RegisterExamDTO registerExamDTO) {
+        examService.updateExam(examId, registerExamDTO);
+        return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
+
+    @PutMapping("/updateExamByCourseId")
+    public ResponseEntity<SuccessDto> updateExamByCourseId(@RequestBody RegisterExamDTO registerExamDTO) {
+        examService.updateExamByCourseId(registerExamDTO);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
@@ -51,6 +50,12 @@ public class ExamController {
     public ResponseEntity<List<GetExamDTO>> getAllExamsByStudentId(@PathVariable Long studentId) {
 
         return new ResponseEntity<>(examService.getAllExamsByStudentId(studentId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllExamsByStudentUsername/{studentUsername}")
+    public ResponseEntity<List<GetExamDTO>> getAllExamsByStudentUsername(@PathVariable String studentUsername) {
+
+        return new ResponseEntity<>(examService.getAllExamsByStudentUsername(studentUsername), HttpStatus.OK);
     }
 
     @GetMapping("/getByCourseId/{courseId}")

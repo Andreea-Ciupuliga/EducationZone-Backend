@@ -1,6 +1,6 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.RegisterCourseDTO;
 import com.example.EducationZoneBackend.Service.CourseService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
@@ -24,44 +24,36 @@ public class CourseController {
     }
 
     @PostMapping("/register")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto> registerCourse(@RequestBody RegisterCourseDTO registerCourseDto)
-    {
+    public ResponseEntity<SuccessDto> registerCourse(@RequestBody RegisterCourseDTO registerCourseDto) {
         courseService.registerCourse(registerCourseDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{courseId}")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto>removeCourse(@PathVariable Long courseId)
-    {
-
+    public ResponseEntity<SuccessDto> removeCourse(@PathVariable Long courseId) {
         courseService.removeCourse(courseId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<GetCourseDTO>> getAllCourses() {
+    public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCourses() {
 
         return new ResponseEntity<>(courseService.getAllCourses(), HttpStatus.OK);
     }
 
     @PutMapping("/{courseId}")
-    @SneakyThrows
-    public  ResponseEntity<SuccessDto> updateCourse(@PathVariable Long courseId, @RequestBody RegisterCourseDTO registerCourseDto)
-    {
-        courseService.updateCourse(courseId,registerCourseDto);
+    public ResponseEntity<SuccessDto> updateCourse(@PathVariable Long courseId, @RequestBody RegisterCourseDTO registerCourseDto) {
+        courseService.updateCourse(courseId, registerCourseDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}")
-    @SneakyThrows
-    public ResponseEntity<GetCourseDTO> getCourse(@PathVariable Long courseId) {
+    public ResponseEntity<GetCourseAndProfessorNameDTO> getCourse(@PathVariable Long courseId) {
         return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
 
     @GetMapping("/getAllByName/{courseName}")
-    public ResponseEntity<List<GetCourseDTO>> getAllCoursesByName(@PathVariable String courseName) {
+    public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCoursesByName(@PathVariable String courseName) {
 
         return new ResponseEntity<>(courseService.getAllCoursesByName(courseName), HttpStatus.OK);
     }
