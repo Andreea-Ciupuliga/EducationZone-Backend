@@ -13,11 +13,14 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c where c.id=:courseId")
+    Optional<GetCourseDTO> findCourseById(Long courseId);
+
     Optional<Course> findByName(String name);
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester,CONCAT(p.firstName, CONCAT(' ',p.lastName))) FROM Course c JOIN ProfessorCourse pc on c.id=pc.course.id JOIN Professor p on pc.professor.id = p.id")
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c")
     List<GetCourseDTO> findAllCourses();
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester,CONCAT(p.firstName, CONCAT(' ',p.lastName))) FROM Course c JOIN ProfessorCourse pc on c.id=pc.course.id JOIN Professor p on pc.professor.id = p.id WHERE c.name LIKE %:name%")
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.name LIKE %:name%")
     List<GetCourseDTO> findAllCoursesByName(@Param("name") String name);
 }
