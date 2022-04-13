@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 
@@ -39,12 +40,15 @@ public class KeycloakAdminService {
 
 
     //pentru ca sa alvam un user
-    public void registerUser(String username, String password, String role) {
+    public void registerUser(String lastName, String firstName, String username, String password, String email, String role) {
 
         //astea sunt campurile pe care le-am fi completat in mod normal din interfata
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setEnabled(true);
         userRepresentation.setUsername(username);
+        userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstName);
+        userRepresentation.setLastName(lastName);
 
         //astea sunt campurile pe care le-am fi completat in mod normal din interfata
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
@@ -62,5 +66,13 @@ public class KeycloakAdminService {
         obiectul de tip role pe care keycloak il tine salvat , doar numele lui */
 
         userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
+    }
+
+    public UserRepresentation findUser(String username) {
+        try {
+            return realmResource.users().get(username).toRepresentation();
+        } catch (NotFoundException e) {
+            return null;
+        }
     }
 }

@@ -1,35 +1,37 @@
 package com.example.EducationZoneBackend.Service;
 
+import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.RegisterCourseDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
 import com.example.EducationZoneBackend.Models.Course;
-import com.example.EducationZoneBackend.Models.Student;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
+import com.example.EducationZoneBackend.Repository.ProfessorCourseRepository;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CourseService {
 
     private CourseRepository courseRepository;
+    private ProfessorCourseRepository professorCourseRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, ProfessorCourseRepository professorCourseRepository) {
         this.courseRepository = courseRepository;
+        this.professorCourseRepository = professorCourseRepository;
     }
 
     @SneakyThrows
-    public void registerCourse(RegisterCourseDTO registerCourseDto)
-    {
-        if(courseRepository.findByName(registerCourseDto.getName()).isPresent())
-        {
+    public void registerCourse(RegisterCourseDTO registerCourseDto) {
+        if (courseRepository.findByName(registerCourseDto.getName()).isPresent()) {
             throw new AlreadyExistException("Course Already Exist");
         }
 
@@ -46,62 +48,109 @@ public class CourseService {
     }
 
     @SneakyThrows
-    public void updateCourse(Long courseId,RegisterCourseDTO newRegisterCourseDto)
-    {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("Course not found"));
+    public void updateCourse(Long courseId, RegisterCourseDTO newRegisterCourseDto) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found"));
 
-        if(newRegisterCourseDto.getName()!=null)
+        if (newRegisterCourseDto.getName() != null)
             course.setName(newRegisterCourseDto.getName());
 
-        if(newRegisterCourseDto.getNumberOfStudents()!=null)
+        if (newRegisterCourseDto.getNumberOfStudents() != null)
             course.setNumberOfStudents(newRegisterCourseDto.getNumberOfStudents());
 
-        if(newRegisterCourseDto.getDescription()!=null)
+        if (newRegisterCourseDto.getDescription() != null)
             course.setDescription(newRegisterCourseDto.getDescription());
 
-        if(newRegisterCourseDto.getYear()!=null)
+        if (newRegisterCourseDto.getYear() != null)
             course.setYear(newRegisterCourseDto.getYear());
 
-        if(newRegisterCourseDto.getSemester()!=null)
+        if (newRegisterCourseDto.getSemester() != null)
             course.setSemester(newRegisterCourseDto.getSemester());
 
         courseRepository.save(course);
     }
 
     @SneakyThrows
-    public void removeCourse(Long courseId)
-    {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("Course not found"));
+    public void removeCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found"));
         courseRepository.delete(course);
     }
 
     @SneakyThrows
-    public List<GetCourseDTO> getAllCourses() {
+    public List<GetCourseAndProfessorNameDTO> getAllCourses() {
 
-        if(courseRepository.findAllCourses().isEmpty())
+        List<GetCourseDTO> courses = courseRepository.findAllCourses();
+
+        if (courses.isEmpty())
             throw new NotFoundException("There are no courses to display");
 
-        return courseRepository.findAllCourses();
+        List<GetCourseAndProfessorNameDTO> coursesAndProfessorName = new ArrayList<>();
+
+
+        for (GetCourseDTO course : courses) {
+            GetProfessorDTO professor = new GetProfessorDTO();
+
+            if (professorCourseRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
+                professor.setFirstName("");
+                professor.setLastName("");
+            } else {
+                professor.setFirstName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
+                professor.setLastName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getLastName());
+            }
+
+            GetCourseAndProfessorNameDTO getCourseAndProfessorNameDTO = new DozerBeanMapper().map(course, GetCourseAndProfessorNameDTO.class);
+            getCourseAndProfessorNameDTO.setProfessorName(professor.getFirstName() + " " + professor.getLastName());
+            coursesAndProfessorName.add(getCourseAndProfessorNameDTO);
+        }
+
+        return coursesAndProfessorName;
     }
 
     @SneakyThrows
-    public GetCourseDTO getCourse(Long courseId)
-    {
-        Course course = courseRepository.findById(courseId).orElseThrow(()->new NotFoundException("Course not found"));
+    public GetCourseAndProfessorNameDTO getCourse(Long courseId) {
+        GetCourseDTO getCourseDto = courseRepository.findCourseById(courseId).orElseThrow(() -> new NotFoundException("Course not found"));
 
-        //Dest dest = mapper.map(source, Dest.class);
-        GetCourseDTO getCourseDto = new DozerBeanMapper().map(course, GetCourseDTO.class);
+        GetProfessorDTO professor = new GetProfessorDTO();
 
-        return getCourseDto;
+        if (professorCourseRepository.findProfessorByCourseId(getCourseDto.getId()).isEmpty()) {
+            professor.setFirstName("");
+            professor.setLastName("");
+        } else {
+            professor.setFirstName(professorCourseRepository.findProfessorByCourseId(getCourseDto.getId()).get().getFirstName());
+            professor.setLastName(professorCourseRepository.findProfessorByCourseId(getCourseDto.getId()).get().getLastName());
+        }
+
+        GetCourseAndProfessorNameDTO getCoursAndProfessorNameDTO = new DozerBeanMapper().map(getCourseDto, GetCourseAndProfessorNameDTO.class);
+        getCoursAndProfessorNameDTO.setProfessorName(professor.getFirstName() + " " + professor.getLastName());
+
+        return getCoursAndProfessorNameDTO;
     }
 
     @SneakyThrows
-    public List<GetCourseDTO> getAllCoursesByName(String courseName) {
+    public List<GetCourseAndProfessorNameDTO> getAllCoursesByName(String courseName) {
 
-        if (courseRepository.findAllCoursesByName(courseName).isEmpty())
+        List<GetCourseDTO> courses = courseRepository.findAllCoursesByName(courseName);
+
+        if (courses.isEmpty())
             throw new NotFoundException("Coursess Not Found");
 
+        List<GetCourseAndProfessorNameDTO> coursesAndProfessorName = new ArrayList<>();
 
-        return courseRepository.findAllCoursesByName(courseName);
+        for (GetCourseDTO course : courses) {
+            GetProfessorDTO professor = new GetProfessorDTO();
+
+            if (professorCourseRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
+                professor.setFirstName("");
+                professor.setLastName("");
+            } else {
+                professor.setFirstName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
+                professor.setLastName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getLastName());
+            }
+
+            GetCourseAndProfessorNameDTO getCourseAndProfessorNameDTO = new DozerBeanMapper().map(course, GetCourseAndProfessorNameDTO.class);
+            getCourseAndProfessorNameDTO.setProfessorName(professor.getFirstName() + " " + professor.getLastName());
+            coursesAndProfessorName.add(getCourseAndProfessorNameDTO);
+        }
+
+        return coursesAndProfessorName;
     }
 }

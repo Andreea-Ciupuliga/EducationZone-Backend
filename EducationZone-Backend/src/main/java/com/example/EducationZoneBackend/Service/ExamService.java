@@ -56,7 +56,30 @@ public class ExamService {
         if (registerExamDTO.getPoints() != null)
             exam.setPoints(registerExamDTO.getPoints());
 
-        //TODO: testez daca merge
+        if (registerExamDTO.getCourseId() != null)
+            exam.setCourse(Course.builder().id(registerExamDTO.getCourseId()).build());
+
+
+        examRepository.save(exam);
+    }
+
+    @SneakyThrows
+    public void updateExamByCourseId(RegisterExamDTO registerExamDTO) {
+
+        if (courseRepository.findById(registerExamDTO.getCourseId()).isEmpty())
+            throw new NotFoundException("Course not found");
+
+        Exam exam = examRepository.findExamByCourseId(registerExamDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Exam not found"));
+
+        if (registerExamDTO.getDescription() != null)
+            exam.setDescription(registerExamDTO.getDescription());
+
+        if (registerExamDTO.getExamDate() != null)
+            exam.setExamDate(registerExamDTO.getExamDate());
+
+        if (registerExamDTO.getPoints() != null)
+            exam.setPoints(registerExamDTO.getPoints());
+
         if (registerExamDTO.getCourseId() != null)
             exam.setCourse(Course.builder().id(registerExamDTO.getCourseId()).build());
 
@@ -75,7 +98,7 @@ public class ExamService {
         if (courseRepository.findById(courseId).isEmpty())
             throw new NotFoundException("Course not found");
 
-        return examRepository.findExamByCourseId(courseId).orElseThrow(() -> new NotFoundException("Exam not found"));
+        return examRepository.findExamDtoByCourseId(courseId).orElseThrow(() -> new NotFoundException("Exam not found"));
     }
 
     @SneakyThrows
@@ -83,8 +106,14 @@ public class ExamService {
         if (studentRepository.findById(studentId).isEmpty())
             throw new NotFoundException("Student not found");
 
-        return examRepository.findExamByStudentId(studentId);
+        return examRepository.findAllExamsByStudentId(studentId);
     }
 
+    @SneakyThrows
+    public List<GetExamDTO> getAllExamsByStudentUsername(String studentUsername) {
+        if (studentRepository.findByUsername(studentUsername).isEmpty())
+            throw new NotFoundException("Student not found");
 
+        return examRepository.findAllExamsByStudentUsername(studentUsername);
+    }
 }

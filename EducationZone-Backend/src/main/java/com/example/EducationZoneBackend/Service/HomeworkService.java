@@ -75,7 +75,7 @@ public class HomeworkService {
         if (studentRepository.findById(studentId).isEmpty())
             throw new NotFoundException("Student not found");
 
-       return homeworkRepository.findAllHomeworksByStudentId(studentId);
+        return homeworkRepository.findAllHomeworksByStudentId(studentId);
     }
 
     @SneakyThrows
@@ -97,9 +97,17 @@ public class HomeworkService {
     @SneakyThrows
     public List<GetHomeworkDTO> getAllHomeworks() {
 
-        if(homeworkRepository.findAllHomeworks().isEmpty())
+        if (homeworkRepository.findAllHomeworks().isEmpty())
             throw new NotFoundException("There are no homeworks to display");
 
         return homeworkRepository.findAllHomeworks();
+    }
+
+    @SneakyThrows
+    public List<GetHomeworkDTO> getAllHomeworksByStudentUsername(String username) {
+        if (studentRepository.findByUsername(username).isEmpty())
+            throw new NotFoundException("Student not found");
+
+        return homeworkRepository.findAllHomeworksByStudentUsername(username);
     }
 }

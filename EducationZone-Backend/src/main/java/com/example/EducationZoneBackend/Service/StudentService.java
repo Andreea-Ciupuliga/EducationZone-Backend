@@ -8,9 +8,12 @@ import com.example.EducationZoneBackend.Models.Student;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,7 +29,6 @@ public class StudentService {
         this.keycloakAdminService = keycloakAdminService;
     }
 
-
     @SneakyThrows
     public void registerStudent(RegisterStudentDTO registerStudentDto) {
         if (studentRepository.findByUsername(registerStudentDto.getUsername()).isPresent()) {
@@ -41,7 +43,6 @@ public class StudentService {
                 .firstName(registerStudentDto.getFirstName())
                 .lastName(registerStudentDto.getLastName())
                 .email(registerStudentDto.getEmail())
-                .password(registerStudentDto.getPassword())
                 .username(registerStudentDto.getUsername())
                 .groupNumber(registerStudentDto.getGroupNumber())
                 .phone(registerStudentDto.getPhone())
@@ -50,21 +51,21 @@ public class StudentService {
                 .build();
 
         studentRepository.save(student);
-        //keycloakAdminService.registerUser(registerStudentDto.getUsername(), registerStudentDto.getPassword(), "ROLE_STUDENT");
+        keycloakAdminService.registerUser(registerStudentDto.getLastName(), registerStudentDto.getFirstName(), registerStudentDto.getUsername(), registerStudentDto.getPassword(), registerStudentDto.getEmail(), "ROLE_STUDENT");
 
     }
 
 
     @SneakyThrows
     public void removeStudent(Long studentId) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("student not found"));
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("Student not found"));
         studentRepository.delete(student);
 
     }
 
     @SneakyThrows
     public GetStudentDTO getStudent(Long studentId) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("student not found"));
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("Student not found"));
 
         //Dest dest = mapper.map(source, Dest.class);
         GetStudentDTO getStudentDto = new DozerBeanMapper().map(student, GetStudentDTO.class);
@@ -74,23 +75,36 @@ public class StudentService {
 
     @SneakyThrows
     public void updateStudent(Long studentId, RegisterStudentDTO newRegisterStudentDto) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("student not found"));
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("Student not found"));
+        UserRepresentation keycloakUser = keycloakAdminService.findUser(student.getUsername());
 
-        if (newRegisterStudentDto.getFirstName() != null)
+        if (newRegisterStudentDto.getFirstName() != null) {
             student.setFirstName(newRegisterStudentDto.getFirstName());
+            keycloakUser.setFirstName(newRegisterStudentDto.getFirstName());
+        }
 
-        if (newRegisterStudentDto.getLastName() != null)
+        if (newRegisterStudentDto.getLastName() != null) {
             student.setLastName(newRegisterStudentDto.getLastName());
+            keycloakUser.setLastName(newRegisterStudentDto.getLastName());
+        }
 
-        if (newRegisterStudentDto.getEmail() != null)
+        if (newRegisterStudentDto.getEmail() != null) {
             student.setEmail(newRegisterStudentDto.getEmail());
+            keycloakUser.setEmail(newRegisterStudentDto.getEmail());
+        }
+        if (newRegisterStudentDto.getPassword() != null) {
+            CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
+            credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
+            credentialRepresentation.setValue(newRegisterStudentDto.getPassword());
+            credentialRepresentation.setTemporary(false);
+            keycloakUser.setCredentials(Collections.singletonList(credentialRepresentation));
+        }
 
-        if (newRegisterStudentDto.getPassword() != null)
-            student.setPassword(newRegisterStudentDto.getPassword());
 
-        if (newRegisterStudentDto.getUsername() != null)
+        if (newRegisterStudentDto.getUsername() != null) {
             student.setUsername(newRegisterStudentDto.getUsername());
-
+            keycloakUser.setUsername(newRegisterStudentDto.getUsername());
+        }
         if (newRegisterStudentDto.getGroupNumber() != null)
             student.setGroupNumber(newRegisterStudentDto.getGroupNumber());
 
@@ -112,7 +126,7 @@ public class StudentService {
     public List<GetStudentDTO> getAllStudents() {
 
         if (studentRepository.findAllStudents().isEmpty())
-            throw new NotFoundException("there are no students to display");
+            throw new NotFoundException("There are no students to display");
 
         return studentRepository.findAllStudents();
     }
