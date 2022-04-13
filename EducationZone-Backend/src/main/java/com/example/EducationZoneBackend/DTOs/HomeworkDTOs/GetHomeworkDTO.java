@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetHomeworkDTO {
 
+    private Long id;
+
     private String description;
 
     private String deadline;
