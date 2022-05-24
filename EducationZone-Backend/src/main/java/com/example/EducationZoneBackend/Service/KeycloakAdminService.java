@@ -1,9 +1,11 @@
 package com.example.EducationZoneBackend.Service;
 
+import com.example.EducationZoneBackend.Config.KeycloakAdminConfig;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -15,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class KeycloakAdminService {
@@ -24,7 +27,7 @@ public class KeycloakAdminService {
     Ne folosim de @Value("${keycloak.realm}") ca sa luam numele realmului Education Zone din application.yml */
 
     private final Keycloak keycloak; //obiectul asta nu e un Bean, ceva ce poate fi injectat prin @Autowired asa ca trebuie sa creez eu un Bean de tipul Keycloak
-    private RealmResource realmResource; /*pentru operatiile pe care vrem sa le facem de ex de salvare. Pe asta nu il pot initializa
+    private static RealmResource realmResource; /*pentru operatiile pe care vrem sa le facem de ex de salvare. Pe asta nu il pot initializa
     in constructor ptc am nevoie de obiectul de tip Keycloak ca sa pot sa il initializez pe realmResource asa ca il initializez intr-o
     metoda pe care o notez cu @PostConstruct */
 
@@ -68,11 +71,15 @@ public class KeycloakAdminService {
         userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
     }
 
-    public UserRepresentation findUser(String username) {
+    public List<UserRepresentation> findUser(String username) {
         try {
-            return realmResource.users().get(username).toRepresentation();
+            return realmResource.users().search(username);
         } catch (NotFoundException e) {
             return null;
         }
+    }
+
+    public static UsersResource getInstance(){
+        return realmResource.users();
     }
 }

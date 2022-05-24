@@ -12,8 +12,9 @@ import com.example.EducationZoneBackend.Models.Participants;
 import com.example.EducationZoneBackend.Models.Student;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
-import com.example.EducationZoneBackend.Repository.ProfessorCourseRepository;
+import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
+import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ParticipantsService {
@@ -29,14 +29,16 @@ public class ParticipantsService {
     private StudentRepository studentRepository;
     private CourseRepository courseRepository;
     private ParticipantsRepository participantsRepository;
-    private ProfessorCourseRepository professorCourseRepository;
+    private ProfessorRepository professorRepository;
+    private SendEmailService sendEmailService;
 
     @Autowired
-    public ParticipantsService(StudentRepository studentRepository, CourseRepository courseRepository, ParticipantsRepository participantsRepository, ProfessorCourseRepository professorCourseRepository) {
+    public ParticipantsService(StudentRepository studentRepository, CourseRepository courseRepository, ParticipantsRepository participantsRepository, ProfessorRepository professorRepository, SendEmailService sendEmailService) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
         this.participantsRepository = participantsRepository;
-        this.professorCourseRepository = professorCourseRepository;
+        this.professorRepository = professorRepository;
+        this.sendEmailService = sendEmailService;
     }
 
 
@@ -67,6 +69,22 @@ public class ParticipantsService {
     }
 
     @SneakyThrows
+    public void addGradeForStudent(Long studentId, Long courseId,String courseGrade) {
+
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new NotFoundException("Student not found"));
+        GetCourseDTO course= courseRepository.findCourseById(courseId).orElseThrow(() -> new NotFoundException("Course not found"));
+        Participants participants = participantsRepository.findByStudentIdAndCourseId(studentId, courseId).orElseThrow(() -> new NotFoundException("Student not at this course"));
+
+        participants.setCourseGrade(courseGrade);
+
+        participantsRepository.save(participants);
+
+        String body="Hello "+student.getFirstName()+" "+student.getLastName()+" ! You have a new grade: "+ courseGrade +" at course: " + course.getName() + ". Go check it out! ";
+        sendEmailService.sendEmail(student.getEmail(),body,"New grade");
+
+    }
+
+    @SneakyThrows
     public List<GetStudentDTO> getAllStudentsByCourseId(Long courseId) {
 
         if (courseRepository.findById(courseId).isEmpty())
@@ -91,12 +109,12 @@ public class ParticipantsService {
 
             GetProfessorDTO professor = new GetProfessorDTO();
 
-            if (professorCourseRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
+            if (professorRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
                 professor.setFirstName("");
                 professor.setLastName("");
             } else {
-                professor.setFirstName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
-                professor.setLastName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getLastName());
+                professor.setFirstName(professorRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
+                professor.setLastName(professorRepository.findProfessorByCourseId(course.getId()).get().getLastName());
             }
 
             GetCourseAndProfessorNameDTO getCourseAndProfessorNameDTO = new DozerBeanMapper().map(course, GetCourseAndProfessorNameDTO.class);
@@ -123,12 +141,12 @@ public class ParticipantsService {
 
             GetProfessorDTO professor = new GetProfessorDTO();
 
-            if (professorCourseRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
+            if (professorRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
                 professor.setFirstName("");
                 professor.setLastName("");
             } else {
-                professor.setFirstName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
-                professor.setLastName(professorCourseRepository.findProfessorByCourseId(course.getId()).get().getLastName());
+                professor.setFirstName(professorRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
+                professor.setLastName(professorRepository.findProfessorByCourseId(course.getId()).get().getLastName());
             }
 
             GetCourseAndProfessorNameDTO getCourseAndProfessorNameDTO = new DozerBeanMapper().map(course, GetCourseAndProfessorNameDTO.class);
@@ -150,6 +168,20 @@ public class ParticipantsService {
             throw new NotFoundException("Student not found");
 
         return participantsRepository.findAllGradesByStudentId(studentId);
+
+    }
+
+    @SneakyThrows
+    public String getGradeByStudentIdAndCourseId(Long studentId, Long courseId) {
+
+        if (studentRepository.findById(studentId).isEmpty())
+            throw new NotFoundException("Student not found");
+
+        if (courseRepository.findById(courseId).isEmpty())
+            throw new NotFoundException("Course not found");
+
+        Participants participants = participantsRepository.findByStudentIdAndCourseId(studentId, courseId).orElseThrow(() -> new NotFoundException("Student not at this course"));
+        return participants.getCourseGrade();
 
     }
 
