@@ -40,7 +40,6 @@ public class Professor {
 
     @JsonIgnore
     @OneToMany(mappedBy = "professor",orphanRemoval = true,cascade = {CascadeType.ALL})
-    List<ProfessorCourse> professorCourse;
-
+    List<Course> courses;
 
 }

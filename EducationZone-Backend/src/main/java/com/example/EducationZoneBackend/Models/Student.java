@@ -54,5 +54,9 @@ public class Student {
     @OneToMany(mappedBy = "student",orphanRemoval = true,cascade = {CascadeType.ALL})
     List<Participants> participants;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "student",orphanRemoval = true,cascade = {CascadeType.ALL})
+    List<StickyNote> stickyNotes;
+
 
 }

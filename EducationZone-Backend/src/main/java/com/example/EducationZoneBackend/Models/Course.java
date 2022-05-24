@@ -41,8 +41,8 @@ public class Course {
     List<Participants> participants;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "course",orphanRemoval = true,cascade = {CascadeType.ALL})
-    List<ProfessorCourse> professorCourse;
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    private Professor professor;
 
     @JsonIgnore
     @OneToMany(mappedBy = "course",orphanRemoval = true,cascade = {CascadeType.ALL})

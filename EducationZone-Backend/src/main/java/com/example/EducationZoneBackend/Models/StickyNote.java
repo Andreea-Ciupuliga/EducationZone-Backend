@@ -12,18 +12,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "professorCourse")
-public class ProfessorCourse {
-
+@Table(name = "stickyNotes")
+public class StickyNote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    private Professor professor;
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
-    private Course course;
+    private Student student;
 
 }

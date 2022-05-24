@@ -28,6 +28,12 @@ public class Exam {
     @Column(name = "points")
     private String points;
 
+    @Column(name = "examRoom")
+    private String examRoom;
+
+    @Column(name = "examHour")
+    private String examHour;
+
     @OneToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name="course_id")
     private Course course;
