@@ -4,7 +4,6 @@ import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNam
 import com.example.EducationZoneBackend.DTOs.CourseDTOs.RegisterCourseDTO;
 import com.example.EducationZoneBackend.Service.CourseService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +49,18 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public ResponseEntity<GetCourseAndProfessorNameDTO> getCourse(@PathVariable Long courseId) {
         return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllCoursesByProfessorId/{professorId}")
+    public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCoursesByProfessorId(@PathVariable Long professorId) {
+
+        return new ResponseEntity<>(courseService.getAllCoursesByProfessorId(professorId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllCoursesByProfessorUsername/{professorUsername}")
+    public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCoursesByProfessorUsername(@PathVariable String professorUsername) {
+
+        return new ResponseEntity<>(courseService.getAllCoursesByProfessorUsername(professorUsername), HttpStatus.OK);
     }
 
     @GetMapping("/getAllByName/{courseName}")

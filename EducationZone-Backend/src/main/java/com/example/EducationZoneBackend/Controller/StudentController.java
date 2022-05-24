@@ -57,6 +57,12 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getStudent(studentId), HttpStatus.OK);
     }
 
+    @GetMapping("/getStudentByUsername/{studentUsername}")
+    @SneakyThrows
+    public ResponseEntity<GetStudentDTO> getStudentByUsername(@PathVariable String studentUsername) {
+        return new ResponseEntity<>(studentService.getStudentByUsername(studentUsername), HttpStatus.OK);
+    }
+
     //@PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
     @PutMapping("/{studentId}")
     @SneakyThrows

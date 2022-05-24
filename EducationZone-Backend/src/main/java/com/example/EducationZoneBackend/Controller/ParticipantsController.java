@@ -5,6 +5,7 @@ import com.example.EducationZoneBackend.DTOs.GradeDTOs.GetGradeDTO;
 import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Service.ParticipantsService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,13 @@ public class ParticipantsController {
     @PostMapping("/register/{studentId}/{courseId}")
     public ResponseEntity<SuccessDto> registerStudentAtCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
         participantsService.registerStudentAtCourse(studentId, courseId);
+        return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
+
+    @PutMapping("/addGradeForStudent/{studentId}/{courseId}/{courseGrade}")
+    @SneakyThrows
+    public ResponseEntity<SuccessDto> addGradeForStudent(@PathVariable Long studentId, @PathVariable Long courseId, @PathVariable String courseGrade) {
+        participantsService.addGradeForStudent(studentId, courseId, courseGrade);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
@@ -51,6 +59,12 @@ public class ParticipantsController {
     public ResponseEntity<List<GetGradeDTO>> getAllGradesByStudentId(@PathVariable Long studentId) {
 
         return new ResponseEntity<>(participantsService.getAllGradesByStudentId(studentId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getGradeByStudentIdAndCourseId/{studentId}/{courseId}")
+    public ResponseEntity<String> getGradeByStudentIdAndCourseId(@PathVariable Long studentId, @PathVariable Long courseId) {
+
+        return new ResponseEntity<>(participantsService.getGradeByStudentIdAndCourseId(studentId, courseId), HttpStatus.OK);
     }
 
     @GetMapping("/getAllGradesByStudentUsername/{studentUsername}")

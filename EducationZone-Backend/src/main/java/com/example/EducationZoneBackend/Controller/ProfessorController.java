@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/professor")
@@ -50,9 +51,21 @@ public class ProfessorController {
         return new ResponseEntity<>(professorService.getProfessor(professorId), HttpStatus.OK);
     }
 
-    @PutMapping()
+    @GetMapping("/getProfessorByCourseId/{courseId}")
+    public ResponseEntity<Optional<GetProfessorDTO>> getProfessorByCourseId(@PathVariable Long courseId) {
+
+        return new ResponseEntity<>(professorService.getProfessorByCourseId(courseId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getProfessorByUsername/{professorUsername}")
     @SneakyThrows
-    public ResponseEntity<SuccessDto> updateProfessor(@RequestParam Long professorId, @RequestBody RegisterProfessorDTO registerProfessorDto) {
+    public ResponseEntity<GetProfessorDTO> getProfessorByUsername(@PathVariable String professorUsername) {
+        return new ResponseEntity<>(professorService.getProfessorByUsername(professorUsername), HttpStatus.OK);
+    }
+
+    @PutMapping("/{professorId}")
+    @SneakyThrows
+    public ResponseEntity<SuccessDto> updateProfessor(@PathVariable Long professorId, @RequestBody RegisterProfessorDTO registerProfessorDto) {
         professorService.updateProfessor(professorId, registerProfessorDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
