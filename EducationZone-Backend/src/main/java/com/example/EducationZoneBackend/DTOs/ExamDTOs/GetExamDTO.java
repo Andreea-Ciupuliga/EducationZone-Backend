@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -20,6 +22,10 @@ public class GetExamDTO {
     private String examDate;
 
     private String points;
+
+    private String examRoom;
+
+    private String examHour;
 
     private Long courseId;
 }

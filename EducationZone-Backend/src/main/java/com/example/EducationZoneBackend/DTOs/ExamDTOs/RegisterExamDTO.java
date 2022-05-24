@@ -17,5 +17,9 @@ public class RegisterExamDTO {
 
     private String points;
 
+    private String examRoom;
+
+    private String examHour;
+
     private Long courseId;
 }

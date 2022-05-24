@@ -25,5 +25,4 @@ public class GetCourseDTO {
 
     private String semester;
 
-    private String professorName;
 }

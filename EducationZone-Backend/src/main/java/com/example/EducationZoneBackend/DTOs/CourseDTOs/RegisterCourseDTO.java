@@ -23,4 +23,6 @@ public class RegisterCourseDTO {
     private String year;
 
     private String semester;
+
+    private Long professorId;
 }
