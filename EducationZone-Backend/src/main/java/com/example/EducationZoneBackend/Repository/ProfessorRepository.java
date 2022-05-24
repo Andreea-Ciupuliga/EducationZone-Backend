@@ -21,4 +21,7 @@ public interface ProfessorRepository extends JpaRepository<Professor,Long> {
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO(p.id,p.firstName,p.lastName,p.email,p.username,p.phone) FROM Professor p WHERE (p.lastName LIKE CONCAT(:name, '%') OR p.firstName LIKE CONCAT(:name, '%') OR CONCAT(p.lastName,' ',p.firstName) LIKE CONCAT(:name, '%') OR CONCAT(p.firstName,' ',p.lastName) LIKE CONCAT(:name, '%'))")
     List<GetProfessorDTO> findAllProfessorsByName(@Param("name")String name);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO(p.id,p.firstName,p.lastName,p.email,p.username,p.phone) FROM Course c JOIN Professor p ON c.professor.id=p.id where c.id=:courseId")
+    Optional<GetProfessorDTO> findProfessorByCourseId(@Param("courseId") Long courseId);
 }

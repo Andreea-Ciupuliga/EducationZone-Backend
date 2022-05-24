@@ -23,4 +23,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.name LIKE %:name%")
     List<GetCourseDTO> findAllCoursesByName(@Param("name") String name);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.professor.id=:professorId")
+    List<GetCourseDTO> findAllCoursesByProfessorId(@Param("professorId") Long professorId);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.professor.username=:professorUsername")
+    List<GetCourseDTO> findAllCoursesByProfessorUsername(String professorUsername);
 }
