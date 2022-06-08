@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProfessorRepository extends JpaRepository<Professor,Long> {
+public interface ProfessorRepository extends JpaRepository<Professor, Long> {
     Optional<Professor> findByUsername(String name);
 
     Optional<Professor> findByEmail(String email);
@@ -20,7 +20,7 @@ public interface ProfessorRepository extends JpaRepository<Professor,Long> {
     List<GetProfessorDTO> findAllProfessors();
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO(p.id,p.firstName,p.lastName,p.email,p.username,p.phone) FROM Professor p WHERE (p.lastName LIKE CONCAT(:name, '%') OR p.firstName LIKE CONCAT(:name, '%') OR CONCAT(p.lastName,' ',p.firstName) LIKE CONCAT(:name, '%') OR CONCAT(p.firstName,' ',p.lastName) LIKE CONCAT(:name, '%'))")
-    List<GetProfessorDTO> findAllProfessorsByName(@Param("name")String name);
+    List<GetProfessorDTO> findAllProfessorsByName(@Param("name") String name);
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO(p.id,p.firstName,p.lastName,p.email,p.username,p.phone) FROM Course c JOIN Professor p ON c.professor.id=p.id where c.id=:courseId")
     Optional<GetProfessorDTO> findProfessorByCourseId(@Param("courseId") Long courseId);

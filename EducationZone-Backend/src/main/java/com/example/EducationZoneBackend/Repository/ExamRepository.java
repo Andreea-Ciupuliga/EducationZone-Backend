@@ -24,4 +24,13 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO(e.id,e.course.name,e.description,e.examDate,e.points,e.examRoom,e.examHour,e.course.id) FROM Exam e JOIN Course c ON e.course.id=c.id JOIN Participants p on p.course.id=c.id where p.student.username=:studentUsername")
     List<GetExamDTO> findAllExamsByStudentUsername(String studentUsername);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO(e.id,e.course.name,e.description,e.examDate,e.points,e.examRoom,e.examHour,e.course.id) FROM Exam e ")
+    List<GetExamDTO> findAllExams();
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO(e.id,e.course.name,e.description,e.examDate,e.points,e.examRoom,e.examHour,e.course.id) FROM Exam e JOIN Course c ON e.course.id=c.id where e.course.name LIKE %:courseName%")
+    List<GetExamDTO> findAllExamsByCourseName(@Param("courseName") String courseName);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO(e.id,e.course.name,e.description,e.examDate,e.points,e.examRoom,e.examHour,e.course.id) FROM Exam e JOIN Course c ON e.course.id=c.id JOIN Participants p on p.course.id=c.id where p.student.username=:studentUsername and e.course.name LIKE %:courseName%")
+    List<GetExamDTO> findAllExamsByStudentUsernameAndCourseName(@Param("studentUsername") String studentUsername, @Param("courseName") String courseName);
 }

@@ -22,5 +22,8 @@ public interface HomeworkRepository extends JpaRepository<Homework, Long> {
     List<GetHomeworkDTO> findAllHomeworks();
 
     @Query("SELECT new com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO(h.id,h.description,h.deadline,h.points,h.course.id,h.course.name) FROM Homework h JOIN Course c ON h.course.id=c.id JOIN Participants p on p.course.id=c.id where p.student.username=:username")
-    List<GetHomeworkDTO> findAllHomeworksByStudentUsername(String username);
+    List<GetHomeworkDTO> findAllHomeworksByStudentUsername(@Param("username") String username);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO(h.id,h.description,h.deadline,h.points,h.course.id,h.course.name) FROM Homework h JOIN Course c ON h.course.id=c.id  JOIN Participants p on p.course.id=c.id where p.student.username=:username AND h.course.name LIKE %:courseName%")
+    List<GetHomeworkDTO> findAllHomeworksByCourseNameAndStudentUsername(@Param("courseName") String courseName, @Param("username") String username);
 }
