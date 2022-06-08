@@ -19,7 +19,7 @@ public class Participants {
     private Long id;
 
     @Column(name = "courseGrade")
-    private String courseGrade;
+    private Long courseGrade;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Student student;

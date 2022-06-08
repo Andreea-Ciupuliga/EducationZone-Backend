@@ -18,7 +18,7 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 15000)
     private String description;
 
     @Column(name = "examDate")

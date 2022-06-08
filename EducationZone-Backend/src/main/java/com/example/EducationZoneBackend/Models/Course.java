@@ -27,7 +27,7 @@ public class Course {
     @Column(name = "numberOfStudents")
     private Long numberOfStudents;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 15000)
     private String description;
 
     @Column(name = "semester")

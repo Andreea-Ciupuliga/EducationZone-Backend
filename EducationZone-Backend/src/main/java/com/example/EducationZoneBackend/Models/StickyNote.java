@@ -22,7 +22,7 @@ public class StickyNote {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description" , length = 15000)
     private String description;
 
     @ManyToOne(cascade = {CascadeType.MERGE})

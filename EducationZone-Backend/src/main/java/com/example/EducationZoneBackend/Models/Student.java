@@ -38,7 +38,7 @@ public class Student {
 
     //grupa la care este studentul
     @Column(name = "groupNumber")
-    private String groupNumber;
+    private Long groupNumber;
 
     @Column(name = "phone")
     private String phone;
