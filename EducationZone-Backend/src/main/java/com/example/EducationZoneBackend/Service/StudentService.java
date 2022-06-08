@@ -1,10 +1,12 @@
 package com.example.EducationZoneBackend.Service;
 
+import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentAndGradeDTO;
 import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.DTOs.StudentDTOs.RegisterStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
 import com.example.EducationZoneBackend.Models.Student;
+import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
 import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
@@ -24,17 +26,19 @@ public class StudentService {
     private StudentRepository studentRepository;
     private final KeycloakAdminService keycloakAdminService; //ca sa pot face salvarea de useri si in keycloak
     private SendEmailService sendEmailService;
+    private ProfessorRepository professorRepository;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository, KeycloakAdminService keycloakAdminService, SendEmailService sendEmailService) {
+    public StudentService(StudentRepository studentRepository, KeycloakAdminService keycloakAdminService, SendEmailService sendEmailService, ProfessorRepository professorRepository) {
         this.studentRepository = studentRepository;
         this.keycloakAdminService = keycloakAdminService;
         this.sendEmailService = sendEmailService;
+        this.professorRepository = professorRepository;
     }
 
     @SneakyThrows
     public void registerStudent(RegisterStudentDTO registerStudentDto) {
-        if (studentRepository.findByUsername(registerStudentDto.getUsername()).isPresent()) {
+        if (studentRepository.findByUsername(registerStudentDto.getUsername()).isPresent() || professorRepository.findByUsername(registerStudentDto.getUsername()).isPresent()) {
             throw new AlreadyExistException("Username Already Exist");
         }
 
@@ -57,8 +61,8 @@ public class StudentService {
         keycloakAdminService.registerUser(registerStudentDto.getLastName(), registerStudentDto.getFirstName(), registerStudentDto.getUsername(), registerStudentDto.getPassword(), registerStudentDto.getEmail(), "ROLE_STUDENT");
 
 
-        String body="Hello "+registerStudentDto.getFirstName()+" "+registerStudentDto.getLastName()+"! An account was created on Education-Zone website using this email address. To log in use this email address and password 'Parola123'. We recommend to change your password after logging in to your account ";
-        sendEmailService.sendEmail(registerStudentDto.getEmail(),body,"New account");
+        String body = "Hello " + registerStudentDto.getFirstName() + " " + registerStudentDto.getLastName() + "! An account was created on Education-Zone website using this email address. To log in use this email address and password " + registerStudentDto.getPassword() + " . We recommend to change your password after logging in to your account ";
+        sendEmailService.sendEmail(registerStudentDto.getEmail(), body, "New account");
     }
 
 

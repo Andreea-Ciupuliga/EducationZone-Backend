@@ -7,6 +7,7 @@ import com.example.EducationZoneBackend.Exceptions.NotFoundException;
 import com.example.EducationZoneBackend.Models.Professor;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
+import com.example.EducationZoneBackend.Repository.StudentRepository;
 import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
@@ -27,18 +28,20 @@ public class ProfessorService {
     private CourseRepository courseRepository;
     private final KeycloakAdminService keycloakAdminService;
     private SendEmailService sendEmailService;
+    private StudentRepository studentRepository;
 
     @Autowired
-    public ProfessorService(ProfessorRepository professorRepository, CourseRepository courseRepository, KeycloakAdminService keycloakAdminService, SendEmailService sendEmailService) {
+    public ProfessorService(ProfessorRepository professorRepository, CourseRepository courseRepository, KeycloakAdminService keycloakAdminService, SendEmailService sendEmailService, StudentRepository studentRepository) {
         this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
         this.keycloakAdminService = keycloakAdminService;
         this.sendEmailService = sendEmailService;
+        this.studentRepository = studentRepository;
     }
 
     @SneakyThrows
     public void registerProfessor(RegisterProfessorDTO registerProfessorDto) {
-        if (professorRepository.findByUsername(registerProfessorDto.getUsername()).isPresent()) {
+        if (professorRepository.findByUsername(registerProfessorDto.getUsername()).isPresent() || studentRepository.findByUsername(registerProfessorDto.getUsername()).isPresent()) {
             throw new AlreadyExistException("Username Already Exist");
         }
 
@@ -50,7 +53,6 @@ public class ProfessorService {
                 .firstName(registerProfessorDto.getFirstName())
                 .lastName(registerProfessorDto.getLastName())
                 .email(registerProfessorDto.getEmail())
-                .password(registerProfessorDto.getPassword())
                 .username(registerProfessorDto.getUsername())
                 .phone(registerProfessorDto.getPhone())
                 .build();
@@ -58,8 +60,8 @@ public class ProfessorService {
         professorRepository.save(professor);
         keycloakAdminService.registerUser(registerProfessorDto.getLastName(), registerProfessorDto.getFirstName(), registerProfessorDto.getUsername(), registerProfessorDto.getPassword(), registerProfessorDto.getEmail(), "ROLE_PROFESSOR");
 
-        String body="Hello "+registerProfessorDto.getFirstName()+" "+registerProfessorDto.getLastName()+"! An account was created on Education-Zone website using this email address. To log in use this email address and password 'Parola123'. We recommend to change your password after logging in to your account ";
-        sendEmailService.sendEmail(registerProfessorDto.getEmail(),body,"New account");
+        String body = "Hello " + registerProfessorDto.getFirstName() + " " + registerProfessorDto.getLastName() + "! An account was created on Education-Zone website using this email address. To log in use this email address and password " + registerProfessorDto.getPassword() + " . We recommend to change your password after logging in to your account ";
+        sendEmailService.sendEmail(registerProfessorDto.getEmail(), body, "New account");
 
     }
 

@@ -40,7 +40,7 @@ public class HomeworkService {
     @SneakyThrows
     public void registerHomework(RegisterHomeworkDTO registerHomeworkDTO) {
 
-        GetCourseDTO course= courseRepository.findCourseById(registerHomeworkDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course id not found"));
+        GetCourseDTO course = courseRepository.findCourseById(registerHomeworkDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course id not found"));
 
         Homework homework = Homework.builder()
                 .description(registerHomeworkDTO.getDescription())
@@ -51,12 +51,11 @@ public class HomeworkService {
 
         homeworkRepository.save(homework);
 
-        List<GetStudentDTO> students=participantsRepository.findAllStudentsByCourseId(registerHomeworkDTO.getCourseId());
+        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerHomeworkDTO.getCourseId());
 
-        for(GetStudentDTO student:students)
-        {
-            String body="Hello "+student.getFirstName()+" "+student.getLastName()+" ! A new homework for course: " + course.getName() + " has been added. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(),body,"New homework");
+        for (GetStudentDTO student : students) {
+            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new homework for course: " + course.getName() + " has been added. Go check it out! ";
+            sendEmailService.sendEmail(student.getEmail(), body, "New homework");
         }
 
     }
@@ -81,28 +80,26 @@ public class HomeworkService {
         }
         homeworkRepository.save(homework);
 
-        List<GetStudentDTO> students=participantsRepository.findAllStudentsByCourseId(registerHomeworkDTO.getCourseId());
+        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerHomeworkDTO.getCourseId());
 
-        for(GetStudentDTO student:students)
-        {
-            String body="Hello "+student.getFirstName()+" "+student.getLastName()+" ! A homework for course: " + homework.getCourse().getName() + " has been updated. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(),body,"Updated homework");
+        for (GetStudentDTO student : students) {
+            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A homework for course: " + homework.getCourse().getName() + " has been updated. Go check it out! ";
+            sendEmailService.sendEmail(student.getEmail(), body, "Updated homework");
         }
     }
 
     @SneakyThrows
     public void removeHomework(Long homeworkId) {
         Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(() -> new NotFoundException("Homework not found"));
-        GetCourseDTO course= courseRepository.findCourseById(homework.getCourse().getId()).orElseThrow(() -> new NotFoundException("Course id not found"));
+        GetCourseDTO course = courseRepository.findCourseById(homework.getCourse().getId()).orElseThrow(() -> new NotFoundException("Course id not found"));
 
-        List<GetStudentDTO> students=participantsRepository.findAllStudentsByCourseId(course.getId());
+        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(course.getId());
 
         homeworkRepository.delete(homework);
 
-        for(GetStudentDTO student:students)
-        {
-            String body="Hello "+student.getFirstName()+" "+student.getLastName()+" ! A homework for course: " + course.getName() + " has been deleted. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(),body,"Deleted homework");
+        for (GetStudentDTO student : students) {
+            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A homework for course: " + course.getName() + " has been deleted. Go check it out! ";
+            sendEmailService.sendEmail(student.getEmail(), body, "Deleted homework");
         }
 
     }
@@ -146,5 +143,13 @@ public class HomeworkService {
             throw new NotFoundException("Student not found");
 
         return homeworkRepository.findAllHomeworksByStudentUsername(username);
+    }
+
+    @SneakyThrows
+    public List<GetHomeworkDTO> getAllHomeworksByCourseNameAndStudentUsername(String courseName, String username) {
+        if (studentRepository.findByUsername(username).isEmpty())
+            throw new NotFoundException("Student not found");
+
+        return homeworkRepository.findAllHomeworksByCourseNameAndStudentUsername(courseName, username);
     }
 }

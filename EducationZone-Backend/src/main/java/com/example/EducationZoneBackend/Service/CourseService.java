@@ -38,7 +38,7 @@ public class CourseService {
 
         Course course = Course.builder()
                 .name(registerCourseDto.getName())
-                .numberOfStudents(registerCourseDto.getNumberOfStudents())
+                .numberOfStudents(0L)
                 .description(registerCourseDto.getDescription())
                 .year(registerCourseDto.getYear())
                 .semester(registerCourseDto.getSemester())
@@ -55,9 +55,6 @@ public class CourseService {
 
         if (newRegisterCourseDto.getName() != null)
             course.setName(newRegisterCourseDto.getName());
-
-        if (newRegisterCourseDto.getNumberOfStudents() != null)
-            course.setNumberOfStudents(newRegisterCourseDto.getNumberOfStudents());
 
         if (newRegisterCourseDto.getDescription() != null)
             course.setDescription(newRegisterCourseDto.getDescription());
@@ -84,21 +81,26 @@ public class CourseService {
     @SneakyThrows
     public List<GetCourseAndProfessorNameDTO> getAllCourses() {
 
+        //lista cu toate cursurile
         List<GetCourseDTO> courses = courseRepository.findAllCourses();
 
         if (courses.isEmpty())
             throw new NotFoundException("There are no courses to display");
 
+        //lista cu cursuri dar care sa contina si numele profesorului
         List<GetCourseAndProfessorNameDTO> coursesAndProfessorName = new ArrayList<>();
 
 
+        //pentru fiecare curs
         for (GetCourseDTO course : courses) {
             GetProfessorDTO professor = new GetProfessorDTO();
 
+            //vad daca exista un profesor care sa il predea. daca nu exista ii setez numele gol
             if (professorRepository.findProfessorByCourseId(course.getId()).isEmpty()) {
                 professor.setFirstName("");
                 professor.setLastName("");
             } else {
+                //daca exista profesor ii salvez numele in obiectul de tip profesor
                 professor.setFirstName(professorRepository.findProfessorByCourseId(course.getId()).get().getFirstName());
                 professor.setLastName(professorRepository.findProfessorByCourseId(course.getId()).get().getLastName());
             }
