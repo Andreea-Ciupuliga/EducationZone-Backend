@@ -5,11 +5,9 @@ import com.example.EducationZoneBackend.DTOs.StudentDTOs.RegisterStudentDTO;
 import com.example.EducationZoneBackend.Service.StudentService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import lombok.SneakyThrows;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +24,6 @@ public class StudentController {
 
     }
 
-    //Todo: testat fara partea de keycloak si merge, trebuie sa mai verific partea cu keycloak
     @PostMapping("/register")
     @SneakyThrows
     public ResponseEntity<SuccessDto> registerStudent(@RequestBody RegisterStudentDTO registerStudentDto) {
@@ -34,7 +31,6 @@ public class StudentController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
     @DeleteMapping("/{studentId}")
     @SneakyThrows
     public ResponseEntity<SuccessDto> removeStudent(@PathVariable Long studentId) {
@@ -42,7 +38,6 @@ public class StudentController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteAll")
     @SneakyThrows
     public ResponseEntity<SuccessDto> removeAllStudents() {
@@ -50,7 +45,6 @@ public class StudentController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{studentId}")
     @SneakyThrows
     public ResponseEntity<GetStudentDTO> getStudent(@PathVariable Long studentId) {
@@ -63,7 +57,6 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getStudentByUsername(studentUsername), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
     @PutMapping("/{studentId}")
     @SneakyThrows
     public ResponseEntity<SuccessDto> updateStudent(@PathVariable Long studentId, @RequestBody RegisterStudentDTO registerStudentDto) {
@@ -71,14 +64,12 @@ public class StudentController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasAnyRole('CLIENT_ADMIN','PROFESSOR','CLIENT_STUDENT')")
     @GetMapping("/getAll")
     public ResponseEntity<List<GetStudentDTO>> getAllStudents() {
 
         return new ResponseEntity<>(studentService.getAllStudents(), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','STUDENT')")
     @GetMapping("/getAllByName/{studentName}")
     public ResponseEntity<List<GetStudentDTO>> getAllStudentsByName(@PathVariable String studentName) {
 

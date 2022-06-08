@@ -46,6 +46,12 @@ public class ExamController {
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
+    @GetMapping("/getAll")
+    public ResponseEntity<List<GetExamDTO>> getAllExams() {
+
+        return new ResponseEntity<>(examService.getAllExams(), HttpStatus.OK);
+    }
+
     @GetMapping("/getAllByStudentId/{studentId}")
     public ResponseEntity<List<GetExamDTO>> getAllExamsByStudentId(@PathVariable Long studentId) {
 
@@ -62,5 +68,17 @@ public class ExamController {
     public ResponseEntity<GetExamDTO> getExamByCourseId(@PathVariable Long courseId) {
 
         return new ResponseEntity<>(examService.getExamByCourseId(courseId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{examId}")
+    public ResponseEntity<GetExamDTO> getExam(@PathVariable Long examId) {
+
+        return new ResponseEntity<>(examService.getExam(examId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllExamsByCourseNameAndStudentUsername/{courseName}/{studentUsername}")
+    public ResponseEntity<List<GetExamDTO>> getAllExamsByCourseNameAndStudentUsername(@PathVariable String courseName, @PathVariable String studentUsername) {
+
+        return new ResponseEntity<>(examService.getAllExamsByCourseNameAndStudentUsername(courseName, studentUsername), HttpStatus.OK);
     }
 }
