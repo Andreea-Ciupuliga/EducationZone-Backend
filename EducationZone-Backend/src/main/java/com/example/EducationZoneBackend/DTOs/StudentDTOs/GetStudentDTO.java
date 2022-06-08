@@ -21,7 +21,7 @@ public class GetStudentDTO {
 
     private String username;
 
-    private String groupNumber;
+    private Long groupNumber;
 
     private String phone;
 

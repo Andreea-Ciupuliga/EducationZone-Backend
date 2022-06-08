@@ -16,8 +16,6 @@ public class RegisterCourseDTO {
 
     private String name;
 
-    private Long numberOfStudents;
-
     private String description;
 
     private String year;

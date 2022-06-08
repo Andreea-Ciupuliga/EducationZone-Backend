@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterStickyNoteDTO {
+public class GetStickyNoteDTO {
+
+    private Long id;
 
     private String title;
 
     private String description;
 
-    private String studentUsername;
 }

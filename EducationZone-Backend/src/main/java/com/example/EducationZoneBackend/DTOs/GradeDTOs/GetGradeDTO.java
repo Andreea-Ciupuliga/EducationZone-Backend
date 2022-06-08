@@ -13,5 +13,5 @@ public class GetGradeDTO {
 
     private String courseName;
 
-    private String courseGrade;
+    private Long courseGrade;
 }
