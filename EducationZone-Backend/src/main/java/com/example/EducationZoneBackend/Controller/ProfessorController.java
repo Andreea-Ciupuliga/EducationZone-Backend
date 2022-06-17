@@ -1,7 +1,7 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO;
-import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.RegisterProfessorDTO;
+import com.example.EducationZoneBackend.DTO.ProfessorDTOs.GetProfessorDTO;
+import com.example.EducationZoneBackend.DTO.ProfessorDTOs.RegisterProfessorDTO;
 import com.example.EducationZoneBackend.Service.ProfessorService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import lombok.SneakyThrows;
@@ -28,6 +28,19 @@ public class ProfessorController {
     @SneakyThrows
     public ResponseEntity<SuccessDto> registerProfessor(@RequestBody RegisterProfessorDTO registerProfessorDto) {
         professorService.registerProfessor(registerProfessorDto);
+        return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByName/{professorName}")
+    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByName(@PathVariable String professorName) {
+        return new ResponseEntity<>(professorService.getAllProfessorsByName(professorName), HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{professorId}")
+    @SneakyThrows
+    public ResponseEntity<SuccessDto> updateProfessor(@PathVariable Long professorId,
+                                                      @RequestBody RegisterProfessorDTO registerProfessorDto) {
+        professorService.updateProfessor(professorId, registerProfessorDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
@@ -63,22 +76,9 @@ public class ProfessorController {
         return new ResponseEntity<>(professorService.getProfessorByUsername(professorUsername), HttpStatus.OK);
     }
 
-    @PutMapping("/{professorId}")
-    @SneakyThrows
-    public ResponseEntity<SuccessDto> updateProfessor(@PathVariable Long professorId, @RequestBody RegisterProfessorDTO registerProfessorDto) {
-        professorService.updateProfessor(professorId, registerProfessorDto);
-        return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
-    }
-
     @GetMapping("/getAll")
     public ResponseEntity<List<GetProfessorDTO>> getAllProfessors() {
 
         return new ResponseEntity<>(professorService.getAllProfessors(), HttpStatus.OK);
-    }
-
-    @GetMapping("/getAllByName/{professorName}")
-    public ResponseEntity<List<GetProfessorDTO>> getAllProfessorsByName(@PathVariable String professorName) {
-
-        return new ResponseEntity<>(professorService.getAllProfessorsByName(professorName), HttpStatus.OK);
     }
 }

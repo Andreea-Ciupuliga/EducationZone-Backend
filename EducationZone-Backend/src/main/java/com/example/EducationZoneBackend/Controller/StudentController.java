@@ -1,7 +1,7 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.RegisterStudentDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.RegisterStudentDTO;
 import com.example.EducationZoneBackend.Service.StudentService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import lombok.SneakyThrows;

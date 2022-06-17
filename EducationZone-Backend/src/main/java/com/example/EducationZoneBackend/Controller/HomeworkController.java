@@ -1,7 +1,7 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO;
-import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.RegisterHomeworkDTO;
+import com.example.EducationZoneBackend.DTO.HomeworkDTOs.GetHomeworkDTO;
+import com.example.EducationZoneBackend.DTO.HomeworkDTOs.RegisterHomeworkDTO;
 import com.example.EducationZoneBackend.Service.HomeworkService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import org.springframework.beans.factory.annotation.Autowired;

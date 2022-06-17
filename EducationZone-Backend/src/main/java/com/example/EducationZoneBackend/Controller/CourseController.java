@@ -1,7 +1,7 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.RegisterCourseDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseAndProfessorNameDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.RegisterCourseDTO;
 import com.example.EducationZoneBackend.Service.CourseService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,12 @@ public class CourseController {
     public ResponseEntity<List<GetCourseAndProfessorNameDTO>> getAllCourses() {
 
         return new ResponseEntity<>(courseService.getAllCourses(), HttpStatus.OK);
+    }
+
+    @GetMapping("/checkIfTheTeacherIsTeachingTheCourse/{courseId}/{professorUsername}")
+    public ResponseEntity<Boolean> checkIfTheTeacherIsTeachingTheCourse(@PathVariable Long courseId,@PathVariable String professorUsername) {
+
+        return new ResponseEntity<>(courseService.checkIfTheTeacherIsTeachingTheCourse(courseId,professorUsername), HttpStatus.OK);
     }
 
     @PutMapping("/{courseId}")

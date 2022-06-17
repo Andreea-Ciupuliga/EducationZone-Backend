@@ -1,7 +1,7 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.StickyNoteDTOs.GetStickyNoteDTO;
-import com.example.EducationZoneBackend.DTOs.StickyNoteDTOs.RegisterStickyNoteDTO;
+import com.example.EducationZoneBackend.DTO.StickyNoteDTOs.GetStickyNoteDTO;
+import com.example.EducationZoneBackend.DTO.StickyNoteDTOs.RegisterStickyNoteDTO;
 import com.example.EducationZoneBackend.Service.StickyNoteService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import org.springframework.beans.factory.annotation.Autowired;

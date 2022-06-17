@@ -1,9 +1,9 @@
 package com.example.EducationZoneBackend.Controller;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
-import com.example.EducationZoneBackend.DTOs.GradeDTOs.GetGradeDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentAndGradeDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseAndProfessorNameDTO;
+import com.example.EducationZoneBackend.DTO.GradeDTOs.GetGradeDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentAndGradeDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Service.ParticipantsService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
 import lombok.SneakyThrows;
@@ -54,6 +54,12 @@ public class ParticipantsController {
     public ResponseEntity<List<GetStudentAndGradeDTO>> getAllStudentsAndGradesByCourseId(@PathVariable Long courseId) {
 
         return new ResponseEntity<>(participantsService.getAllStudentsAndGradesByCourseId(courseId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllStudentsAndGradesByCourseIdAndStudentName/{courseId}/{studentName}")
+    public ResponseEntity<List<GetStudentAndGradeDTO>> getAllStudentsAndGradesByCourseIdAndStudentName(@PathVariable Long courseId, @PathVariable String studentName) {
+
+        return new ResponseEntity<>(participantsService.getAllStudentsAndGradesByCourseIdAndStudentName(courseId, studentName), HttpStatus.OK);
     }
 
     @GetMapping("/getAllCoursesByStudentId/{studentId}")
