@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.Models;
+package com.example.EducationZoneBackend.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,20 +12,21 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "stickyNotes")
-public class StickyNote {
-
+@Table(name = "participants")
+public class Participants {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "description" , length = 15000)
-    private String description;
+    @Column(name = "courseGrade")
+    private Long courseGrade;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Student student;
+
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    private Course course;
+
+
 
 }

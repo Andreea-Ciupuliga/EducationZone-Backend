@@ -1,6 +1,5 @@
-package com.example.EducationZoneBackend.Models;
+package com.example.EducationZoneBackend.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +26,7 @@ public class Course {
     @Column(name = "numberOfStudents")
     private Long numberOfStudents;
 
-    @Column(name = "description", length = 15000)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "semester")
@@ -36,20 +35,16 @@ public class Course {
     @Column(name = "year")
     private String year;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "course",orphanRemoval = true,cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "course", orphanRemoval = true, cascade = {CascadeType.ALL})
     List<Participants> participants;
 
-    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Professor professor;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "course",orphanRemoval = true,cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "course", orphanRemoval = true, cascade = {CascadeType.ALL})
     List<Homework> homeworks;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "course",orphanRemoval = true,cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "course", orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Exam exam;
 
 }

@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.Models;
+package com.example.EducationZoneBackend.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description", length = 15000)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "examDate")
@@ -26,7 +26,7 @@ public class Exam {
 
     //ce punctaj are examenul
     @Column(name = "points")
-    private String points;
+    private Long points;
 
     @Column(name = "examRoom")
     private String examRoom;

@@ -1,6 +1,5 @@
-package com.example.EducationZoneBackend.Models;
+package com.example.EducationZoneBackend.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,11 +49,9 @@ public class Student {
     @Column(name = "department")
     private String department;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "student",orphanRemoval = true,cascade = {CascadeType.ALL})
     List<Participants> participants;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "student",orphanRemoval = true,cascade = {CascadeType.ALL})
     List<StickyNote> stickyNotes;
 

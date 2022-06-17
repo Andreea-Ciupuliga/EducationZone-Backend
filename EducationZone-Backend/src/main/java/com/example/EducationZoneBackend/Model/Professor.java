@@ -1,6 +1,5 @@
-package com.example.EducationZoneBackend.Models;
+package com.example.EducationZoneBackend.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +37,6 @@ public class Professor {
     @Column(name = "phone")
     private String phone;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "professor",orphanRemoval = true,cascade = {CascadeType.ALL})
     List<Course> courses;
 
