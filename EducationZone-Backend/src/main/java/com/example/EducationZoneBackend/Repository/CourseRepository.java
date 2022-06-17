@@ -1,7 +1,7 @@
 package com.example.EducationZoneBackend.Repository;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
-import com.example.EducationZoneBackend.Models.Course;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.Model.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,22 +13,26 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c")
+    Optional<Course> findById(Long id);
+
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c")
     List<GetCourseDTO> findAllCourses();
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c where c.id=:courseId")
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c where c.id=:courseId")
     Optional<GetCourseDTO> findCourseById(@Param("courseId") Long courseId);
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.professor.username=:professorUsername")
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.professor.username=:professorUsername")
     List<GetCourseDTO> findAllCoursesByProfessorUsername(@Param("professorUsername") String professorUsername);
 
     Optional<Course> findByName(String name);
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.name LIKE %:name%")
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.name LIKE %:name%")
     List<GetCourseDTO> findAllCoursesByName(@Param("name") String name);
 
-    @Query("SELECT new com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.professor.id=:professorId")
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Course c WHERE c.professor.id=:professorId")
     List<GetCourseDTO> findAllCoursesByProfessorId(@Param("professorId") Long professorId);
 
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) from Course c where c.professor.username =:professorUsername AND c.id =:courseId")
+    Optional<GetCourseDTO> findByCourseIdAndProfessorUsername(@Param("courseId") Long courseId, @Param("professorUsername") String professorUsername);
 
 }
