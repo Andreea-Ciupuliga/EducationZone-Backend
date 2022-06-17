@@ -1,10 +1,10 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO;
-import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.RegisterProfessorDTO;
+import com.example.EducationZoneBackend.DTO.ProfessorDTOs.GetProfessorDTO;
+import com.example.EducationZoneBackend.DTO.ProfessorDTOs.RegisterProfessorDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.Professor;
+import com.example.EducationZoneBackend.Model.Professor;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class ProfessorService {
@@ -41,6 +43,16 @@ public class ProfessorService {
 
     @SneakyThrows
     public void registerProfessor(RegisterProfessorDTO registerProfessorDto) {
+
+        if (registerProfessorDto.getFirstName().isEmpty() || registerProfessorDto.getLastName().isEmpty() || registerProfessorDto.getEmail().isEmpty() || registerProfessorDto.getPassword().isEmpty() || registerProfessorDto.getUsername().isEmpty() || registerProfessorDto.getPhone().isEmpty())
+            throw new NotFoundException("The record was not saved because all fields are required");
+
+        Pattern pattern = Pattern.compile("^(.+)@(.+)$");
+        Matcher matcher = pattern.matcher(registerProfessorDto.getEmail());
+
+        if(matcher.matches()==false)
+            throw new NotFoundException("Invalid email format");
+
         if (professorRepository.findByUsername(registerProfessorDto.getUsername()).isPresent() || studentRepository.findByUsername(registerProfessorDto.getUsername()).isPresent()) {
             throw new AlreadyExistException("Username Already Exist");
         }
@@ -60,7 +72,7 @@ public class ProfessorService {
         professorRepository.save(professor);
         keycloakAdminService.registerUser(registerProfessorDto.getLastName(), registerProfessorDto.getFirstName(), registerProfessorDto.getUsername(), registerProfessorDto.getPassword(), registerProfessorDto.getEmail(), "ROLE_PROFESSOR");
 
-        String body = "Hello " + registerProfessorDto.getFirstName() + " " + registerProfessorDto.getLastName() + "! An account was created on Education-Zone website using this email address. To log in use this email address and password " + registerProfessorDto.getPassword() + " . We recommend to change your password after logging in to your account ";
+        String body = "Hello " + registerProfessorDto.getFirstName() + " " + registerProfessorDto.getLastName() + "! An account was created on Education-Zone web platform using this email address. To log in use this email address and password " + registerProfessorDto.getPassword() + " . We recommend to change your password after logging in to your account ";
         sendEmailService.sendEmail(registerProfessorDto.getEmail(), body, "New account");
 
     }

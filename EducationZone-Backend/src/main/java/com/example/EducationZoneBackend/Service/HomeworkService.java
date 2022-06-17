@@ -1,12 +1,12 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
-import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.GetHomeworkDTO;
-import com.example.EducationZoneBackend.DTOs.HomeworkDTOs.RegisterHomeworkDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTO.HomeworkDTOs.GetHomeworkDTO;
+import com.example.EducationZoneBackend.DTO.HomeworkDTOs.RegisterHomeworkDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.Course;
-import com.example.EducationZoneBackend.Models.Homework;
+import com.example.EducationZoneBackend.Model.Course;
+import com.example.EducationZoneBackend.Model.Homework;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.HomeworkRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
@@ -39,6 +39,9 @@ public class HomeworkService {
 
     @SneakyThrows
     public void registerHomework(RegisterHomeworkDTO registerHomeworkDTO) {
+
+        if (registerHomeworkDTO.getDescription().isEmpty() || registerHomeworkDTO.getDeadline().isEmpty() || registerHomeworkDTO.getPoints() == null || registerHomeworkDTO.getCourseId() == null)
+            throw new NotFoundException("The record was not saved because all fields are required");
 
         GetCourseDTO course = courseRepository.findCourseById(registerHomeworkDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course id not found"));
 

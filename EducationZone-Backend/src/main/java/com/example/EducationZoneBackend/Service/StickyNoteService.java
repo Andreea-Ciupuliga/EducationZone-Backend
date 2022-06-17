@@ -1,10 +1,10 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.StickyNoteDTOs.GetStickyNoteDTO;
-import com.example.EducationZoneBackend.DTOs.StickyNoteDTOs.RegisterStickyNoteDTO;
+import com.example.EducationZoneBackend.DTO.StickyNoteDTOs.GetStickyNoteDTO;
+import com.example.EducationZoneBackend.DTO.StickyNoteDTOs.RegisterStickyNoteDTO;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.StickyNote;
-import com.example.EducationZoneBackend.Models.Student;
+import com.example.EducationZoneBackend.Model.StickyNote;
+import com.example.EducationZoneBackend.Model.Student;
 import com.example.EducationZoneBackend.Repository.StickyNoteRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
 import lombok.SneakyThrows;

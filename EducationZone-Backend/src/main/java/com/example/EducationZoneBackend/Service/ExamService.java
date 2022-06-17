@@ -1,13 +1,13 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
-import com.example.EducationZoneBackend.DTOs.ExamDTOs.GetExamDTO;
-import com.example.EducationZoneBackend.DTOs.ExamDTOs.RegisterExamDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTO.ExamDTOs.GetExamDTO;
+import com.example.EducationZoneBackend.DTO.ExamDTOs.RegisterExamDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.Course;
-import com.example.EducationZoneBackend.Models.Exam;
+import com.example.EducationZoneBackend.Model.Course;
+import com.example.EducationZoneBackend.Model.Exam;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ExamRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
@@ -40,6 +40,9 @@ public class ExamService {
 
     @SneakyThrows
     public void registerExam(RegisterExamDTO registerExamDTO) {
+
+        if (registerExamDTO.getDescription().isEmpty() || registerExamDTO.getExamDate().isEmpty() || registerExamDTO.getPoints() == null || registerExamDTO.getExamRoom().isEmpty() || registerExamDTO.getExamHour().isEmpty() || registerExamDTO.getCourseId() == null)
+            throw new NotFoundException("The record was not saved because all fields are required");
 
         GetCourseDTO course = courseRepository.findCourseById(registerExamDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course id not found"));
 

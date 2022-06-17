@@ -1,16 +1,16 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
-import com.example.EducationZoneBackend.DTOs.GradeDTOs.GetGradeDTO;
-import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentAndGradeDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseAndProfessorNameDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTO.GradeDTOs.GetGradeDTO;
+import com.example.EducationZoneBackend.DTO.ProfessorDTOs.GetProfessorDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentAndGradeDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.Course;
-import com.example.EducationZoneBackend.Models.Participants;
-import com.example.EducationZoneBackend.Models.Student;
+import com.example.EducationZoneBackend.Model.Course;
+import com.example.EducationZoneBackend.Model.Participants;
+import com.example.EducationZoneBackend.Model.Student;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
@@ -65,7 +65,6 @@ public class ParticipantsService {
 
         course.setNumberOfStudents(course.getNumberOfStudents() + 1);
         courseRepository.save(course);
-
 
     }
 
@@ -153,8 +152,6 @@ public class ParticipantsService {
             throw new NotFoundException("Course not found");
 
         return participantsRepository.findAllStudentsByCourseId(courseId);
-
-
     }
 
     @SneakyThrows
@@ -165,6 +162,38 @@ public class ParticipantsService {
 
         //iau toti studentii de la cursul respectiv
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(courseId);
+        List<GetStudentAndGradeDTO> studentsAndGrades = new ArrayList<>();
+
+        for (GetStudentDTO student : students) {//pentru fiecare student caut nota
+
+
+            GetGradeDTO grade = new GetGradeDTO();
+
+            //daca nu are nota la cursul respectiv o setez ""
+            if (participantsRepository.findGradeByStudentIdAndCourseId(student.getId(), courseId).isEmpty()) {
+                grade.setCourseGrade(Long.valueOf(""));
+            } else {
+                //daca are nota o salvez
+                grade.setCourseGrade(participantsRepository.findGradeByStudentIdAndCourseId(student.getId(), courseId).get().getCourseGrade());
+            }
+
+            GetStudentAndGradeDTO getStudentAndGradeDTO = new DozerBeanMapper().map(student, GetStudentAndGradeDTO.class);
+            getStudentAndGradeDTO.setGrade(grade.getCourseGrade());
+            studentsAndGrades.add(getStudentAndGradeDTO);
+
+        }
+
+        return studentsAndGrades;
+    }
+
+    @SneakyThrows
+    public List<GetStudentAndGradeDTO> getAllStudentsAndGradesByCourseIdAndStudentName(Long courseId, String studentName) {
+
+        if (courseRepository.findById(courseId).isEmpty())
+            throw new NotFoundException("Course not found");
+
+        //iau toti studentii de la cursul respectiv
+        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseIdAndStudentName(courseId, studentName);
         List<GetStudentAndGradeDTO> studentsAndGrades = new ArrayList<>();
 
         for (GetStudentDTO student : students) {//pentru fiecare student caut nota

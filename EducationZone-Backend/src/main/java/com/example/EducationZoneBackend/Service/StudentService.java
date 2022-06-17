@@ -1,11 +1,10 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentAndGradeDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.GetStudentDTO;
-import com.example.EducationZoneBackend.DTOs.StudentDTOs.RegisterStudentDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
+import com.example.EducationZoneBackend.DTO.StudentDTOs.RegisterStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.Student;
+import com.example.EducationZoneBackend.Model.Student;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
 import com.example.EducationZoneBackend.Utils.SendEmailService;
@@ -19,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class StudentService {
@@ -38,6 +39,16 @@ public class StudentService {
 
     @SneakyThrows
     public void registerStudent(RegisterStudentDTO registerStudentDto) {
+
+        if (registerStudentDto.getFirstName().isEmpty() || registerStudentDto.getLastName().isEmpty() || registerStudentDto.getEmail().isEmpty() || registerStudentDto.getPassword().isEmpty() || registerStudentDto.getUsername().isEmpty() || registerStudentDto.getGroupNumber() == null || registerStudentDto.getPhone().isEmpty() || registerStudentDto.getYear().isEmpty() || registerStudentDto.getDepartment().isEmpty())
+            throw new NotFoundException("The record was not saved because all fields are required");
+
+        Pattern pattern = Pattern.compile("^(.+)@(.+)$");
+        Matcher matcher = pattern.matcher(registerStudentDto.getEmail());
+
+        if(matcher.matches()==false)
+            throw new NotFoundException("Invalid email format");
+
         if (studentRepository.findByUsername(registerStudentDto.getUsername()).isPresent() || professorRepository.findByUsername(registerStudentDto.getUsername()).isPresent()) {
             throw new AlreadyExistException("Username Already Exist");
         }
@@ -45,7 +56,6 @@ public class StudentService {
         if (studentRepository.findByEmail(registerStudentDto.getEmail()).isPresent()) {
             throw new AlreadyExistException("Email Already Exist");
         }
-
         Student student = Student.builder()
                 .firstName(registerStudentDto.getFirstName())
                 .lastName(registerStudentDto.getLastName())
@@ -58,10 +68,11 @@ public class StudentService {
                 .build();
 
         studentRepository.save(student);
-        keycloakAdminService.registerUser(registerStudentDto.getLastName(), registerStudentDto.getFirstName(), registerStudentDto.getUsername(), registerStudentDto.getPassword(), registerStudentDto.getEmail(), "ROLE_STUDENT");
+        keycloakAdminService.registerUser(registerStudentDto.getLastName(), registerStudentDto.getFirstName(), registerStudentDto.getUsername(), registerStudentDto.getPassword(),
+                registerStudentDto.getEmail(), "ROLE_STUDENT");
 
-
-        String body = "Hello " + registerStudentDto.getFirstName() + " " + registerStudentDto.getLastName() + "! An account was created on Education-Zone website using this email address. To log in use this email address and password " + registerStudentDto.getPassword() + " . We recommend to change your password after logging in to your account ";
+        String body = "Hello " + registerStudentDto.getFirstName() + " " + registerStudentDto.getLastName() + "! An account was created on Education-Zone web platform using this email address." +
+                " To log in use this email address and password " + registerStudentDto.getPassword() + " . We recommend to change your password after logging in to your account ";
         sendEmailService.sendEmail(registerStudentDto.getEmail(), body, "New account");
     }
 

@@ -1,13 +1,13 @@
 package com.example.EducationZoneBackend.Service;
 
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseAndProfessorNameDTO;
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.GetCourseDTO;
-import com.example.EducationZoneBackend.DTOs.CourseDTOs.RegisterCourseDTO;
-import com.example.EducationZoneBackend.DTOs.ProfessorDTOs.GetProfessorDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseAndProfessorNameDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO;
+import com.example.EducationZoneBackend.DTO.CourseDTOs.RegisterCourseDTO;
+import com.example.EducationZoneBackend.DTO.ProfessorDTOs.GetProfessorDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
-import com.example.EducationZoneBackend.Models.Course;
-import com.example.EducationZoneBackend.Models.Professor;
+import com.example.EducationZoneBackend.Model.Course;
+import com.example.EducationZoneBackend.Model.Professor;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import lombok.SneakyThrows;
@@ -32,8 +32,16 @@ public class CourseService {
 
     @SneakyThrows
     public void registerCourse(RegisterCourseDTO registerCourseDto) {
+
+        if (registerCourseDto.getName().isEmpty() || registerCourseDto.getDescription().isEmpty() || registerCourseDto.getYear().isEmpty() || registerCourseDto.getSemester().isEmpty() || registerCourseDto.getProfessorId() == null)
+            throw new NotFoundException("The record was not saved because all fields are required");
+
         if (courseRepository.findByName(registerCourseDto.getName()).isPresent()) {
             throw new AlreadyExistException("Course Already Exist");
+        }
+
+        if (professorRepository.findById(registerCourseDto.getProfessorId()).isEmpty()) {
+            throw new NotFoundException("There is no professor with this id");
         }
 
         Course course = Course.builder()
@@ -193,8 +201,18 @@ public class CourseService {
     }
 
     @SneakyThrows
+    public Boolean checkIfTheTeacherIsTeachingTheCourse(Long courseId, String professorUsername) {
+
+        if (courseRepository.findByCourseIdAndProfessorUsername(courseId, professorUsername).isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    @SneakyThrows
     public List<GetCourseAndProfessorNameDTO> getAllCoursesByProfessorId(Long professorId) {
 
+        System.out.println(professorId);
         if (professorRepository.findById(professorId).isEmpty())
             throw new NotFoundException("Professor not found");
 
@@ -218,8 +236,10 @@ public class CourseService {
             coursesAndProfessorName.add(getCourseAndProfessorNameDTO);
 
         }
-
+        System.out.println(coursesAndProfessorName);
         return coursesAndProfessorName;
 
     }
+
+
 }
