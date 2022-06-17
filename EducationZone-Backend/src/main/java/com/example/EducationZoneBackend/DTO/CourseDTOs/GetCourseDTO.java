@@ -1,11 +1,9 @@
-package com.example.EducationZoneBackend.DTOs.CourseDTOs;
+package com.example.EducationZoneBackend.DTO.CourseDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Builder
 @Data

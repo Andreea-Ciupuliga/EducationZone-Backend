@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.DTOs.HomeworkDTOs;
+package com.example.EducationZoneBackend.DTO.HomeworkDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class GetHomeworkDTO {
 
     private String deadline;
 
-    private String points;
+    private Long points;
 
     private Long courseId;
 

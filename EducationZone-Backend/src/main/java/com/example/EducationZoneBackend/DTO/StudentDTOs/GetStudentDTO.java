@@ -1,25 +1,23 @@
-package com.example.EducationZoneBackend.DTOs.StudentDTOs;
+package com.example.EducationZoneBackend.DTO.StudentDTOs;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-
-
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterStudentDTO {
+public class GetStudentDTO {
+
+    private Long id;
 
     private String firstName;
 
     private String lastName;
 
     private String email;
-
-    private String password;
 
     private String username;
 

@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.DTOs.StickyNoteDTOs;
+package com.example.EducationZoneBackend.DTO.StickyNoteDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

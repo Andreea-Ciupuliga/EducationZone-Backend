@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.DTOs.ProfessorDTOs;
+package com.example.EducationZoneBackend.DTO.StudentDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetProfessorDTO {
-
+public class GetStudentAndGradeDTO {
     private Long id;
 
     private String firstName;
@@ -21,6 +20,13 @@ public class GetProfessorDTO {
 
     private String username;
 
+    private Long groupNumber;
+
     private String phone;
 
+    private String year;
+
+    private String department;
+
+    private Long grade;
 }

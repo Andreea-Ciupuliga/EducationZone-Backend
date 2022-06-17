@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.DTOs.CourseDTOs;
+package com.example.EducationZoneBackend.DTO.CourseDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

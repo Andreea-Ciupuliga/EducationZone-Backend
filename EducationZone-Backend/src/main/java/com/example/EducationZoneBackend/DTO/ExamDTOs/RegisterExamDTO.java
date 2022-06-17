@@ -1,27 +1,21 @@
-package com.example.EducationZoneBackend.DTOs.ExamDTOs;
+package com.example.EducationZoneBackend.DTO.ExamDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetExamDTO {
-
-    private Long id;
-
-    private String courseName;
+public class RegisterExamDTO {
 
     private String description;
 
     private String examDate;
 
-    private String points;
+    private Long points;
 
     private String examRoom;
 

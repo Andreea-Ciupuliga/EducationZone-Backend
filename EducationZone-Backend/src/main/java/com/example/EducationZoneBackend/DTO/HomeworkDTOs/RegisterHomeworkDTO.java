@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.DTOs.ExamDTOs;
+package com.example.EducationZoneBackend.DTO.HomeworkDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,17 +9,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterExamDTO {
+public class RegisterHomeworkDTO {
 
     private String description;
 
-    private String examDate;
+    private String deadline;
 
-    private String points;
-
-    private String examRoom;
-
-    private String examHour;
+    private Long points;
 
     private Long courseId;
 }

@@ -1,4 +1,4 @@
-package com.example.EducationZoneBackend.DTOs.StickyNoteDTOs;
+package com.example.EducationZoneBackend.DTO.CourseDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetStickyNoteDTO {
+public class RegisterCourseDTO {
 
-    private Long id;
 
-    private String title;
+    private String name;
 
     private String description;
 
+    private String year;
+
+    private String semester;
+
+    private Long professorId;
 }
