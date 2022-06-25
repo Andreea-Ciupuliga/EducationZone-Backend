@@ -212,7 +212,6 @@ public class CourseService {
     @SneakyThrows
     public List<GetCourseAndProfessorNameDTO> getAllCoursesByProfessorId(Long professorId) {
 
-        System.out.println(professorId);
         if (professorRepository.findById(professorId).isEmpty())
             throw new NotFoundException("Professor not found");
 
@@ -236,7 +235,6 @@ public class CourseService {
             coursesAndProfessorName.add(getCourseAndProfessorNameDTO);
 
         }
-        System.out.println(coursesAndProfessorName);
         return coursesAndProfessorName;
 
     }
