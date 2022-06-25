@@ -14,6 +14,9 @@ import java.util.Optional;
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
 
+    @Query("SELECT new com.example.EducationZoneBackend.DTO.ExamDTOs.GetExamDTO(e.id,e.course.name,e.description,e.examDate,e.points,e.examRoom,e.examHour,e.course.id) FROM Exam e JOIN Course c ON e.course.id=c.id where e.id=:examId")
+    Optional<GetExamDTO> findExamById(@Param("examId") Long examId);
+
     @Query("SELECT new com.example.EducationZoneBackend.DTO.ExamDTOs.GetExamDTO(e.id,e.course.name,e.description,e.examDate,e.points,e.examRoom,e.examHour,e.course.id) FROM Exam e JOIN Course c ON e.course.id=c.id where e.course.id=:courseId")
     Optional<GetExamDTO> findExamDtoByCourseId(@Param("courseId") Long courseId);
 

@@ -24,6 +24,9 @@ public interface ParticipantsRepository extends JpaRepository<Participants, Long
     @Query("SELECT p from Participants p where p.student.id =:studentId AND p.course.id =:courseId")
     Optional<Participants> findByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
 
+    @Query("SELECT p from Participants p where p.student.username =:studentUsername AND p.course.id =:courseId")
+    Optional<Participants> findByStudentUsernameAndCourseId(@Param("studentUsername") String studentUsername, @Param("courseId") Long courseId);
+
     @Query("SELECT new com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO(c.id,c.name,c.numberOfStudents,c.description,c.year,c.semester) FROM Participants part JOIN Course c ON part.course.id = c.id WHERE part.student.id=:studentId")
     List<GetCourseDTO> findAllCoursesByStudentId(@Param("studentId") Long studentId);
 

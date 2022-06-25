@@ -98,6 +98,12 @@ public class ParticipantsController {
         return new ResponseEntity<>(participantsService.getAllGradesByCourseNameAndStudentUsername(courseName, studentUsername), HttpStatus.OK);
     }
 
+    @GetMapping("/checkIfTheStudentIsAddedToTheCourse/{courseId}/{studentUsername}")
+    public ResponseEntity<Boolean> checkIfTheStudentIsAddedToTheCourse(@PathVariable Long courseId, @PathVariable String studentUsername) {
+
+        return new ResponseEntity<>(participantsService.checkIfTheStudentIsAddedToTheCourse(studentUsername, courseId), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{studentId}/{courseId}")
     public ResponseEntity<SuccessDto> removeStudentCourseRelationship(@PathVariable Long studentId, @PathVariable Long courseId) {
         participantsService.removeStudentCourseRelationship(studentId, courseId);
