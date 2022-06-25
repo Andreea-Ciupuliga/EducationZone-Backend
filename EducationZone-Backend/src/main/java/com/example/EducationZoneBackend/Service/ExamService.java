@@ -62,10 +62,10 @@ public class ExamService {
 
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerExamDTO.getCourseId());
 
-        for (GetStudentDTO student : students) {
-            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new exam for course " + course.getName() + " has been added. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(), body, "New exam");
-        }
+        students.parallelStream().forEach(student ->
+                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new exam for course " + course.getName() + " has been added. Go check it out! ", "New exam")
+        );
+
     }
 
     @SneakyThrows
@@ -96,10 +96,9 @@ public class ExamService {
 
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerExamDTO.getCourseId());
 
-        for (GetStudentDTO student : students) {
-            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(), body, "Updated exam");
-        }
+        students.parallelStream().forEach(student ->
+                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ", "Updated exam")
+        );
     }
 
     @SneakyThrows
@@ -130,10 +129,10 @@ public class ExamService {
 
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerExamDTO.getCourseId());
 
-        for (GetStudentDTO student : students) {
-            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(), body, "Updated exam");
-        }
+        students.parallelStream().forEach(student ->
+                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ", "Updated exam")
+        );
+
     }
 
     @SneakyThrows
@@ -145,15 +144,14 @@ public class ExamService {
 
         examRepository.delete(exam);
 
-        for (GetStudentDTO student : students) {
-            String body = "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + course.getName() + " has been deleted. Go check it out! ";
-            sendEmailService.sendEmail(student.getEmail(), body, "Deleted exam");
-        }
-
+        students.parallelStream().forEach(student ->
+                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + course.getName() + " has been deleted. Go check it out! ", "Deleted exam")
+        );
     }
 
     @SneakyThrows
     public GetExamDTO getExamByCourseId(Long courseId) {
+
         if (courseRepository.findById(courseId).isEmpty())
             throw new NotFoundException("Course not found");
 
@@ -163,11 +161,8 @@ public class ExamService {
 
     @SneakyThrows
     public GetExamDTO getExam(Long examId) {
-        Exam exam = examRepository.findById(examId).orElseThrow(() -> new NotFoundException("Exam not found"));
 
-        //Dest dest = mapper.map(source, Dest.class);
-        GetExamDTO getExamDTO = new DozerBeanMapper().map(exam, GetExamDTO.class);
-
+        GetExamDTO getExamDTO = examRepository.findExamById(examId).orElseThrow(() -> new NotFoundException("Exam not found"));
         return getExamDTO;
     }
 
@@ -175,6 +170,9 @@ public class ExamService {
     public List<GetExamDTO> getAllExamsByStudentId(Long studentId) {
         if (studentRepository.findById(studentId).isEmpty())
             throw new NotFoundException("Student not found");
+
+        if(examRepository.findAllExamsByStudentId(studentId).isEmpty())
+            throw new NotFoundException("There are no exams to display");
 
         return examRepository.findAllExamsByStudentId(studentId);
     }
@@ -189,6 +187,9 @@ public class ExamService {
 
     @SneakyThrows
     public List<GetExamDTO> getAllExamsByCourseNameAndStudentUsername(String courseName, String studentUsername) {
+
+        if(examRepository.findAllExamsByStudentUsernameAndCourseName(studentUsername, courseName).isEmpty())
+            throw new NotFoundException("There is no exam for this course or the course name is incorrect");
 
         return examRepository.findAllExamsByStudentUsernameAndCourseName(studentUsername, courseName);
     }
