@@ -194,6 +194,10 @@ public class ParticipantsService {
 
         //iau toti studentii de la cursul respectiv
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseIdAndStudentName(courseId, studentName);
+
+        if(students.isEmpty())
+            throw new NotFoundException("There are no students to display");
+
         List<GetStudentAndGradeDTO> studentsAndGrades = new ArrayList<>();
 
         for (GetStudentDTO student : students) {//pentru fiecare student caut nota
@@ -338,7 +342,19 @@ public class ParticipantsService {
         if (studentRepository.findByUsername(studentUsername).isEmpty())
             throw new NotFoundException("Student not found");
 
+        if(participantsRepository.findAllGradesByCourseNameAndStudentUsername(courseName, studentUsername).isEmpty())
+            throw new NotFoundException("There are no courses with that name");
+
         return participantsRepository.findAllGradesByCourseNameAndStudentUsername(courseName, studentUsername);
+    }
+
+    @SneakyThrows
+    public Boolean checkIfTheStudentIsAddedToTheCourse(String studentUsername,Long courseId) {
+
+        if (participantsRepository.findByStudentUsernameAndCourseId(studentUsername,courseId).isEmpty())
+            return false;
+        else
+            return true;
     }
 
 
