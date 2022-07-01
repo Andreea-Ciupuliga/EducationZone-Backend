@@ -15,7 +15,6 @@ import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
-import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,6 @@ public class ParticipantsService {
         if (participantsRepository.findByStudentIdAndCourseId(studentId, courseId).isPresent()) {
             throw new AlreadyExistException("Student already at this course");
         }
-
 
         Participants participants = Participants.builder()
                 .student(Student.builder().id(studentId).build())
@@ -95,6 +93,8 @@ public class ParticipantsService {
                 newStudents++;
             }
         }
+        if (newStudents == 0)
+            throw new AlreadyExistException("No students were added. Are you sure this group of students is not already enrolled in this course?");
 
         course.setNumberOfStudents(course.getNumberOfStudents() + newStudents);
         courseRepository.save(course);
@@ -115,7 +115,7 @@ public class ParticipantsService {
         //pentru fiecare student
         for (GetStudentDTO student : students) {
 
-            //il stergem de la curs doar daca este scris la curs
+            //il stergem de la curs doar daca este inscris la curs
             if (participantsRepository.findByStudentIdAndCourseId(student.getId(), courseId).isPresent()) {
 
                 Participants participants = participantsRepository.findByStudentIdAndCourseId(student.getId(), courseId).orElseThrow(() -> new NotFoundException("Student not at this course"));
@@ -124,6 +124,9 @@ public class ParticipantsService {
                 deletedStudents++;
             }
         }
+
+        if (deletedStudents == 0)
+            throw new NotFoundException("No students were deleted. Are you sure this group of students is enrolled in this course?");
 
         course.setNumberOfStudents(course.getNumberOfStudents() - deletedStudents);
         courseRepository.save(course);
@@ -162,6 +165,10 @@ public class ParticipantsService {
 
         //iau toti studentii de la cursul respectiv
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(courseId);
+
+        if (students.isEmpty())
+            throw new NotFoundException("There are no students to display");
+
         List<GetStudentAndGradeDTO> studentsAndGrades = new ArrayList<>();
 
         for (GetStudentDTO student : students) {//pentru fiecare student caut nota
@@ -195,7 +202,7 @@ public class ParticipantsService {
         //iau toti studentii de la cursul respectiv
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseIdAndStudentName(courseId, studentName);
 
-        if(students.isEmpty())
+        if (students.isEmpty())
             throw new NotFoundException("There are no students to display");
 
         List<GetStudentAndGradeDTO> studentsAndGrades = new ArrayList<>();
@@ -342,16 +349,16 @@ public class ParticipantsService {
         if (studentRepository.findByUsername(studentUsername).isEmpty())
             throw new NotFoundException("Student not found");
 
-        if(participantsRepository.findAllGradesByCourseNameAndStudentUsername(courseName, studentUsername).isEmpty())
+        if (participantsRepository.findAllGradesByCourseNameAndStudentUsername(courseName, studentUsername).isEmpty())
             throw new NotFoundException("There are no courses with that name");
 
         return participantsRepository.findAllGradesByCourseNameAndStudentUsername(courseName, studentUsername);
     }
 
     @SneakyThrows
-    public Boolean checkIfTheStudentIsAddedToTheCourse(String studentUsername,Long courseId) {
+    public Boolean checkIfTheStudentIsAddedToTheCourse(String studentUsername, Long courseId) {
 
-        if (participantsRepository.findByStudentUsernameAndCourseId(studentUsername,courseId).isEmpty())
+        if (participantsRepository.findByStudentUsernameAndCourseId(studentUsername, courseId).isEmpty())
             return false;
         else
             return true;

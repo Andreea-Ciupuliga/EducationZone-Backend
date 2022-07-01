@@ -1,13 +1,14 @@
 package com.example.EducationZoneBackend.Service;
 
+import com.example.EducationZoneBackend.DTO.CourseDTOs.GetCourseDTO;
 import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.DTO.StudentDTOs.RegisterStudentDTO;
 import com.example.EducationZoneBackend.Exceptions.AlreadyExistException;
 import com.example.EducationZoneBackend.Exceptions.NotFoundException;
 import com.example.EducationZoneBackend.Model.Student;
+import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
-import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -28,13 +29,17 @@ public class StudentService {
     private final KeycloakAdminService keycloakAdminService; //ca sa pot face salvarea de useri si in keycloak
     private SendEmailService sendEmailService;
     private ProfessorRepository professorRepository;
+    private ParticipantsRepository participantsRepository;
+    private ParticipantsService participantsService;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository, KeycloakAdminService keycloakAdminService, SendEmailService sendEmailService, ProfessorRepository professorRepository) {
+    public StudentService(StudentRepository studentRepository, KeycloakAdminService keycloakAdminService, SendEmailService sendEmailService, ProfessorRepository professorRepository, ParticipantsRepository participantsRepository, ParticipantsService participantsService) {
         this.studentRepository = studentRepository;
         this.keycloakAdminService = keycloakAdminService;
         this.sendEmailService = sendEmailService;
         this.professorRepository = professorRepository;
+        this.participantsRepository = participantsRepository;
+        this.participantsService = participantsService;
     }
 
     @SneakyThrows
@@ -46,7 +51,7 @@ public class StudentService {
         Pattern pattern = Pattern.compile("^(.+)@(.+)$");
         Matcher matcher = pattern.matcher(registerStudentDto.getEmail());
 
-        if(matcher.matches()==false)
+        if (matcher.matches() == false)
             throw new NotFoundException("Invalid email format");
 
         if (studentRepository.findByUsername(registerStudentDto.getUsername()).isPresent() || professorRepository.findByUsername(registerStudentDto.getUsername()).isPresent()) {
@@ -85,8 +90,15 @@ public class StudentService {
         UsersResource usersResource = KeycloakAdminService.getInstance();
         usersResource.get(keycloakUser.get(0).getId()).remove();
 
-        studentRepository.delete(student);
+        //gasesc toate cursurile la care este inscris studentul si scad numarul de studenti de la fiecare curs
+        List<GetCourseDTO> courses = participantsRepository.findAllCoursesByStudentId(studentId);
 
+        if (!courses.isEmpty())
+            for (GetCourseDTO course : courses) {
+                participantsService.removeStudentCourseRelationship(studentId, course.getId());
+            }
+
+        studentRepository.delete(student);
     }
 
     @SneakyThrows

@@ -8,7 +8,6 @@ import com.example.EducationZoneBackend.Model.Professor;
 import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ProfessorRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
-import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
 import org.dozer.DozerBeanMapper;
 import org.keycloak.admin.client.resource.UsersResource;

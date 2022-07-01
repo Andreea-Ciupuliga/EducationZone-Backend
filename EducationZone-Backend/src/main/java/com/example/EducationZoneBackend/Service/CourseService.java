@@ -37,7 +37,7 @@ public class CourseService {
             throw new NotFoundException("The record was not saved because all fields are required");
 
         if (courseRepository.findByName(registerCourseDto.getName()).isPresent()) {
-            throw new AlreadyExistException("Course Already Exist");
+            throw new AlreadyExistException("Course already exist");
         }
 
         if (professorRepository.findById(registerCourseDto.getProfessorId()).isEmpty()) {
@@ -147,7 +147,7 @@ public class CourseService {
         List<GetCourseDTO> courses = courseRepository.findAllCoursesByName(courseName);
 
         if (courses.isEmpty())
-            throw new NotFoundException("Coursess Not Found");
+            throw new NotFoundException("Course / Courses Not Found");
 
         List<GetCourseAndProfessorNameDTO> coursesAndProfessorName = new ArrayList<>();
 
@@ -195,9 +195,7 @@ public class CourseService {
             coursesAndProfessorName.add(getCourseAndProfessorNameDTO);
 
         }
-
         return coursesAndProfessorName;
-
     }
 
     @SneakyThrows
@@ -236,8 +234,6 @@ public class CourseService {
 
         }
         return coursesAndProfessorName;
-
     }
-
 
 }

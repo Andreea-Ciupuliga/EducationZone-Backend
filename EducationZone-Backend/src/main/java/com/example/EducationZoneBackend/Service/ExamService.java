@@ -12,9 +12,7 @@ import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.ExamRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
-import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
-import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,9 +60,14 @@ public class ExamService {
 
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerExamDTO.getCourseId());
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new exam for course " + course.getName() + " has been added. Go check it out! ", "New exam")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new exam for course " + course.getName() + " has been added. Go check it out! ", "New exam");
+        });
 
     }
 
@@ -88,17 +91,29 @@ public class ExamService {
         if (registerExamDTO.getExamHour() != null)
             exam.setExamHour(registerExamDTO.getExamHour());
 
-        if (registerExamDTO.getCourseId() != null) {
-            Course course = courseRepository.findById(registerExamDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course not found"));
-            exam.setCourse(course);
-        }
+//        if (registerExamDTO.getCourseId() != null) {
+//            Course course = courseRepository.findById(registerExamDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course not found"));
+//
+//            if (examRepository.findExamByCourseId(registerExamDTO.getCourseId()).isPresent())
+//                throw new AlreadyExistException("This course already has an exam");
+//
+//            exam.setCourse(course);
+//        }
+
+        GetCourseDTO course = courseRepository.findCourseByExamId(examId).orElseThrow(() -> new NotFoundException("Course not found"));
+
         examRepository.save(exam);
 
-        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerExamDTO.getCourseId());
+        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(course.getId());
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ", "Updated exam")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ", "Updated exam");
+        });
     }
 
     @SneakyThrows
@@ -123,15 +138,24 @@ public class ExamService {
 
         if (registerExamDTO.getCourseId() != null) {
             Course course = courseRepository.findById(registerExamDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course not found"));
+
+            if (examRepository.findExamByCourseId(registerExamDTO.getCourseId()).isPresent())
+                throw new AlreadyExistException("This course already has an exam");
+
             exam.setCourse(course);
         }
         examRepository.save(exam);
 
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerExamDTO.getCourseId());
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ", "Updated exam")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + exam.getCourse().getName() + " has been updated. Go check it out! ", "Updated exam");
+        });
 
     }
 
@@ -144,9 +168,14 @@ public class ExamService {
 
         examRepository.delete(exam);
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + course.getName() + " has been deleted. Go check it out! ", "Deleted exam")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! The exam for course: " + course.getName() + " has been deleted. Go check it out! ", "Deleted exam");
+        });
     }
 
     @SneakyThrows
@@ -171,7 +200,7 @@ public class ExamService {
         if (studentRepository.findById(studentId).isEmpty())
             throw new NotFoundException("Student not found");
 
-        if(examRepository.findAllExamsByStudentId(studentId).isEmpty())
+        if (examRepository.findAllExamsByStudentId(studentId).isEmpty())
             throw new NotFoundException("There are no exams to display");
 
         return examRepository.findAllExamsByStudentId(studentId);
@@ -188,7 +217,7 @@ public class ExamService {
     @SneakyThrows
     public List<GetExamDTO> getAllExamsByCourseNameAndStudentUsername(String courseName, String studentUsername) {
 
-        if(examRepository.findAllExamsByStudentUsernameAndCourseName(studentUsername, courseName).isEmpty())
+        if (examRepository.findAllExamsByStudentUsernameAndCourseName(studentUsername, courseName).isEmpty())
             throw new NotFoundException("There is no exam for this course or the course name is incorrect");
 
         return examRepository.findAllExamsByStudentUsernameAndCourseName(studentUsername, courseName);

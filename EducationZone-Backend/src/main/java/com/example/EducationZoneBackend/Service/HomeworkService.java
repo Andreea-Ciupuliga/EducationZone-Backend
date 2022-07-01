@@ -11,9 +11,7 @@ import com.example.EducationZoneBackend.Repository.CourseRepository;
 import com.example.EducationZoneBackend.Repository.HomeworkRepository;
 import com.example.EducationZoneBackend.Repository.ParticipantsRepository;
 import com.example.EducationZoneBackend.Repository.StudentRepository;
-import com.example.EducationZoneBackend.Utils.SendEmailService;
 import lombok.SneakyThrows;
-import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,9 +54,14 @@ public class HomeworkService {
 
         List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerHomeworkDTO.getCourseId());
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new homework for course: " + course.getName() + " has been added. Go check it out! ", "New homework")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A new homework for course: " + course.getName() + " has been added. Go check it out! ", "New homework");
+        });
     }
 
     @SneakyThrows
@@ -75,17 +78,22 @@ public class HomeworkService {
         if (registerHomeworkDTO.getPoints() != null)
             homework.setPoints(registerHomeworkDTO.getPoints());
 
-        if (registerHomeworkDTO.getCourseId() != null) {
-            Course course = courseRepository.findById(registerHomeworkDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course not found"));
-            homework.setCourse(course);
-        }
+//        if (registerHomeworkDTO.getCourseId() != null) {
+//            Course course = courseRepository.findById(registerHomeworkDTO.getCourseId()).orElseThrow(() -> new NotFoundException("Course not found"));
+//            homework.setCourse(course);
+//        }
         homeworkRepository.save(homework);
 
-        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(registerHomeworkDTO.getCourseId());
+        List<GetStudentDTO> students = participantsRepository.findAllStudentsByCourseId(homework.getCourse().getId());
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A homework for course: " + homework.getCourse().getName() + " has been updated. Go check it out! ", "Updated homework")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A homework for course: " + homework.getCourse().getName() + " has been updated. Go check it out! ", "Updated homework");
+        });
     }
 
     @SneakyThrows
@@ -97,9 +105,14 @@ public class HomeworkService {
 
         homeworkRepository.delete(homework);
 
-        students.parallelStream().forEach(student ->
-                sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A homework for course: " + course.getName() + " has been deleted. Go check it out! ", "Deleted homework")
-        );
+        students.parallelStream().forEach(student -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sendEmailService.sendEmail(student.getEmail(), "Hello " + student.getFirstName() + " " + student.getLastName() + " ! A homework for course: " + course.getName() + " has been deleted. Go check it out! ", "Deleted homework");
+        });
     }
 
     @SneakyThrows
@@ -117,7 +130,7 @@ public class HomeworkService {
     public List<GetHomeworkDTO> getAllHomeworksByCourseId(Long courseId) {
 
         if (homeworkRepository.findAllHomeworksByCourseId(courseId).isEmpty())
-            throw new NotFoundException("There are no homeworks to display");
+            throw new NotFoundException("There are no homeworks to display or the course id is incorrect");
 
         return homeworkRepository.findAllHomeworksByCourseId(courseId);
 
