@@ -6,7 +6,6 @@ import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentAndGradeDTO;
 import com.example.EducationZoneBackend.DTO.StudentDTOs.GetStudentDTO;
 import com.example.EducationZoneBackend.Service.ParticipantsService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,6 @@ public class ParticipantsController {
     }
 
     @PutMapping("/addGradeForStudent/{studentId}/{courseId}/{courseGrade}")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> addGradeForStudent(@PathVariable Long studentId, @PathVariable Long courseId, @PathVariable Long courseGrade) {
         participantsService.addGradeForStudent(studentId, courseId, courseGrade);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);

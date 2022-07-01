@@ -4,7 +4,6 @@ import com.example.EducationZoneBackend.DTO.ProfessorDTOs.GetProfessorDTO;
 import com.example.EducationZoneBackend.DTO.ProfessorDTOs.RegisterProfessorDTO;
 import com.example.EducationZoneBackend.Service.ProfessorService;
 import com.example.EducationZoneBackend.Utils.SuccessDto;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class ProfessorController {
     }
 
     @PostMapping("/register")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> registerProfessor(@RequestBody RegisterProfessorDTO registerProfessorDto) {
         professorService.registerProfessor(registerProfessorDto);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
@@ -37,7 +35,6 @@ public class ProfessorController {
     }
 
     @PutMapping("/update/{professorId}")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> updateProfessor(@PathVariable Long professorId,
                                                       @RequestBody RegisterProfessorDTO registerProfessorDto) {
         professorService.updateProfessor(professorId, registerProfessorDto);
@@ -45,21 +42,18 @@ public class ProfessorController {
     }
 
     @DeleteMapping("/{professorId}")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> removeProfessor(@PathVariable Long professorId) {
         professorService.removeProfessor(professorId);
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteAll")
-    @SneakyThrows
     public ResponseEntity<SuccessDto> removeAllProfessors() {
         professorService.removeAllProfessors();
         return new ResponseEntity<>(new SuccessDto(), HttpStatus.OK);
     }
 
     @GetMapping("/{professorId}")
-    @SneakyThrows
     public ResponseEntity<GetProfessorDTO> getProfessor(@PathVariable Long professorId) {
         return new ResponseEntity<>(professorService.getProfessor(professorId), HttpStatus.OK);
     }
@@ -71,7 +65,6 @@ public class ProfessorController {
     }
 
     @GetMapping("/getProfessorByUsername/{professorUsername}")
-    @SneakyThrows
     public ResponseEntity<GetProfessorDTO> getProfessorByUsername(@PathVariable String professorUsername) {
         return new ResponseEntity<>(professorService.getProfessorByUsername(professorUsername), HttpStatus.OK);
     }
