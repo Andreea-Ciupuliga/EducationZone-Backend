@@ -24,8 +24,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: educationzoneapp@gmail.com
-    #password: EducationZoneApp1*
-    password: nltakpmistnremne
+    password: ~pun parola~
     properties:
       mail:
         smtp:
